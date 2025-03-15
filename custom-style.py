@@ -2,10 +2,11 @@
 Custom styling for the Academic Information Hub application.
 This can be modified separately from the main application logic.
 """
+# pylint: disable=no-name-in-module, import-error, trailing-whitespace, line-too-long, no-member, unused-import, too-many-lines, invalid-name
 
 # Material Design color palette
 PRIMARY = "#6200EE"
-PRIMARY_VARIANT = "#3700B3" 
+PRIMARY_VARIANT = "#3700B3"
 SECONDARY = "#03DAC6"
 SECONDARY_VARIANT = "#018786"
 BACKGROUND = "#FFFFFF"
@@ -49,21 +50,21 @@ def get_stylesheet():
         }}
         
         .section-header {{
-            font-size: 18px;
+            font-size: 16px;
+            font-weight: bold;
+            color: {TEXT_PRIMARY};
+            margin-bottom: 8px;
+        }}
+        
+        .content-header {{
+            font-size: 20px;
             font-weight: bold;
             color: {TEXT_PRIMARY};
             margin-bottom: 12px;
         }}
         
-        .content-header {{
-            font-size: 24px;
-            font-weight: bold;
-            color: {TEXT_PRIMARY};
-            margin-bottom: 16px;
-        }}
-        
         .date-header {{
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: {TEXT_PRIMARY};
         }}
@@ -72,9 +73,10 @@ def get_stylesheet():
             background-color: {SIDEBAR_BG};
             border: 1px solid {BORDER_COLOR};
             border-radius: 4px;
-            padding: 8px 12px;
+            padding: 6px 10px;
             text-align: left;
             color: {TEXT_PRIMARY};
+            margin-bottom: 4px;
         }}
         
         .class-button:checked {{
@@ -87,13 +89,19 @@ def get_stylesheet():
             background-color: {HOVER_BG};
         }}
         
+        .filter-group {{
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }}
+        
         .filter-button {{
             background-color: {SIDEBAR_BG};
             border: 1px solid {BORDER_COLOR};
             border-radius: 4px;
-            padding: 6px 12px;
-            text-align: center;
+            padding: 4px 8px;
+            text-align: left;
             color: {TEXT_PRIMARY};
+            margin-bottom: 2px;
         }}
         
         .filter-button:checked {{
@@ -109,37 +117,41 @@ def get_stylesheet():
         .activity-item {{
             background-color: {CARD_BG};
             border: 1px solid {BORDER_COLOR};
-            border-radius: 8px;
-            padding: 12px;
-            margin: 6px 0;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 4px 0;
         }}
         
         .activity-item:hover {{
             border-color: {PRIMARY_VARIANT};
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }}
         
         .activity-title {{
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             color: {TEXT_PRIMARY};
         }}
         
         .activity-course {{
-            font-size: 13px;
+            font-size: 12px;
             color: {TEXT_SECONDARY};
         }}
         
         .activity-status {{
-            font-size: 13px;
+            font-size: 12px;
             color: {TEXT_SECONDARY};
-            margin-left: 16px;
+            margin-left: 12px;
         }}
         
         .icon-button {{
             background-color: transparent;
             border: none;
             border-radius: 16px;
+            min-width: 24px;
+            max-width: 24px;
+            min-height: 24px;
+            max-height: 24px;
         }}
         
         .icon-button:hover {{
@@ -153,43 +165,76 @@ def get_stylesheet():
         .chat-input {{
             border: 1px solid {BORDER_COLOR};
             border-radius: 4px;
-            padding: 10px 16px;
-            font-size: 14px;
+            padding: 8px 12px;
+            font-size: 13px;
             background-color: {SURFACE};
+        }}
+        
+        .chat-input:focus {{
+            border-color: {PRIMARY};
+            outline: none;
         }}
         
         .chat-display {{
             border: 1px solid {BORDER_COLOR};
             border-radius: 4px;
-            padding: 16px;
+            padding: 12px;
             background-color: {SURFACE};
-            font-size: 14px;
+            font-size: 13px;
         }}
         
         .date-label {{
-            font-size: 14px;
+            font-size: 13px;
             color: {TEXT_SECONDARY};
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }}
         
         .date-field {{
             border: 1px solid {BORDER_COLOR};
             border-radius: 4px;
-            padding: 8px 12px;
+            padding: 4px 8px;
             background-color: {SURFACE};
+        }}
+        
+        QDateEdit {{
+            border: 1px solid {BORDER_COLOR};
+            border-radius: 4px;
+            padding: 4px 8px;
+            background-color: {SURFACE};
+        }}
+        
+        QDateEdit::drop-down {{
+            subcontrol-origin: padding;
+            subcontrol-position: center right;
+            width: 20px;
+            border-left: 1px solid {BORDER_COLOR};
+        }}
+        
+        QGroupBox {{
+            border: 1px solid {BORDER_COLOR};
+            border-radius: 4px;
+            margin-top: 14px;
+            font-weight: bold;
+        }}
+        
+        QGroupBox::title {{
+            subcontrol-origin: margin;
+            subcontrol-position: top left;
+            left: 8px;
+            padding: 0 3px;
         }}
         
         QScrollBar:vertical {{
             border: none;
             background: {BACKGROUND};
-            width: 8px;
+            width: 6px;
             margin: 0px;
         }}
         
         QScrollBar::handle:vertical {{
             background: {BORDER_COLOR};
-            border-radius: 4px;
-            min-height: 30px;
+            border-radius: 3px;
+            min-height: 20px;
         }}
         
         QScrollBar::handle:vertical:hover {{
@@ -203,14 +248,14 @@ def get_stylesheet():
         QScrollBar:horizontal {{
             border: none;
             background: {BACKGROUND};
-            height: 8px;
+            height: 6px;
             margin: 0px;
         }}
         
         QScrollBar::handle:horizontal {{
             background: {BORDER_COLOR};
-            border-radius: 4px;
-            min-width: 30px;
+            border-radius: 3px;
+            min-width: 20px;
         }}
         
         QScrollBar::handle:horizontal:hover {{
@@ -219,6 +264,36 @@ def get_stylesheet():
         
         QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
             width: 0px;
+        }}
+        
+        .chat-message {{
+            background-color: {BACKGROUND};
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            border: 1px solid {BORDER_COLOR};
+        }}
+        
+        .chat-header {{
+            font-size: 16px;
+            font-weight: bold;
+            color: {TEXT_PRIMARY};
+            margin-bottom: 6px;
+        }}
+        
+        QPushButton {{
+            border-radius: 4px;
+            padding: 6px 12px;
+            background-color: {BACKGROUND};
+            border: 1px solid {BORDER_COLOR};
+        }}
+        
+        QPushButton:hover {{
+            background-color: {HOVER_BG};
+        }}
+        
+        QPushButton:pressed {{
+            background-color: {SELECTED_BG};
         }}
     """
 

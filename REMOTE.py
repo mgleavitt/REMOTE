@@ -2,7 +2,7 @@
 REMOTE (Remote Education Management and Organization Tool for Education)
 Improved implementation with UI enhancements based on feedback.
 """
-# pylint: disable=no-name-in-module, import-error, trailing-whitespace, line-too-long, no-member, unused-import
+# pylint: disable=no-name-in-module, import-error, trailing-whitespace, line-too-long, no-member, unused-import, too-many-lines, invalid-name
 
 import sys
 import os
@@ -14,12 +14,12 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QLineEdit, QScrollArea, QFrame, QSplitter,
     QTextEdit, QCalendarWidget, QDialog, QListView, QAbstractItemView,
-    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox
+    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, QStyleOptionViewItem, QStyle
 )
 from PySide6.QtCore import (
     Qt, QDate, Signal, QAbstractListModel, QModelIndex, QRect,
     QSize, QPoint, QSortFilterProxyModel, QPropertyAnimation, 
-    QEasingCurve, Property, QObject
+    QEasingCurve, Property, QObject, QEvent
 )
 from PySide6.QtGui import (
     QIcon, QFontMetrics, QPainter, QColor, QBrush, QPen, QFont,
@@ -309,6 +309,21 @@ def get_stylesheet():
             color: {TEXT_PRIMARY};
             margin-bottom: 6px;
         }}
+        .send-button {{
+            background-color: {PRIMARY};
+            color: {ON_PRIMARY};
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+        }}
+
+        .send-button:hover {{
+            background-color: {PRIMARY_VARIANT};
+        }}
+
+        .send-button:pressed {{
+            background-color: {SECONDARY_VARIANT};
+        }}    
     """
 
 # Try to import Qt-Material, with fallback to custom stylesheets
@@ -339,7 +354,7 @@ class ActivityModel(QAbstractListModel):
         super().__init__(parent)
         self._activities = []
         
-    def row_count(self, parent=QModelIndex()): # pylint: disable=unused-argument
+    def rowCount(self, parent=QModelIndex()): # pylint: disable=invalid-name,unused-argument
         """Return the number of rows in the model."""
         return len(self._activities)
     
@@ -491,6 +506,22 @@ class CompactDateEdit(QDateEdit):
         self.setDate(QDate.currentDate())
         self.setFixedHeight(28)
         self.setToolTip("Click to select a date")
+        
+        # Ensure calendar icon is visible
+        # First try to set a standard icon if available
+        try:
+            self.calendarWidget().setWindowIcon(QIcon.fromTheme("calendar"))
+        except (AttributeError, RuntimeError):
+            # Pass silently if the calendar widget isn't available or properly initialized
+            pass
+            
+        # Setup button text as fallback if icon is not visible
+        btn = self.findChild(QPushButton)
+        if btn:
+            if not btn.icon() or btn.icon().isNull():
+                btn.setText("📅")
+                btn.setFixedWidth(28)
+        self.setToolTip("Click to select a date")
 
 
 class ClassButton(QPushButton):
@@ -538,7 +569,7 @@ class ActivityItemDelegate(QStyledItemDelegate):
             if os.path.exists(email_path):
                 self._email_icon = QIcon(email_path)
     
-    def size_hint(self, option, index):  # pylint: disable=unused-argument
+    def sizeHint(self, option, index):  # pylint: disable=invalid-name,unused-argument
         """Return the size hint for the item."""
         return QSize(option.rect.width(), 70)
     
@@ -559,62 +590,95 @@ class ActivityItemDelegate(QStyledItemDelegate):
         painter.setRenderHint(QPainter.Antialiasing)
         
         # Check if item is selected
-        if option.state & QAbstractItemView.State_Selected:
+        if option.state & QStyle.State_Selected:
             painter.fillRect(option.rect, QColor(SELECTED_BG))
-        elif option.state & QAbstractItemView.State_MouseOver:
+        elif option.state & QStyle.State_MouseOver:
             painter.fillRect(option.rect, QColor(HOVER_BG))
         else:
             painter.fillRect(option.rect, QColor(CARD_BG))
         
-        # Draw border
+        # Draw border with more consistent style
         painter.setPen(QPen(QColor(BORDER_COLOR)))
-        painter.drawRoundedRect(option.rect.adjusted(2, 2, -2, -2), 6, 6)
+        painter.drawRect(option.rect.adjusted(2, 2, -2, -2))
         
         # Set up text rectangles
         content_rect = option.rect.adjusted(10, 8, -10, -8)
         title_rect = QRect(content_rect.left(), content_rect.top(), 
-                          content_rect.width() - 70, 20)
+                        content_rect.width() - 60, 20)
         
         info_rect = QRect(content_rect.left(), title_rect.bottom() + 2,
-                         content_rect.width() - 70, 20)
+                        content_rect.width() - 60, 20)
         
         status_rect = QRect(content_rect.left(), info_rect.bottom() + 2,
-                           content_rect.width() - 70, 16)
+                        content_rect.width() - 60, 16)
         
         # Draw title
         painter.setPen(QPen(QColor(TEXT_PRIMARY)))
         painter.setFont(QFont(option.font.family(), 10, QFont.Bold))
         painter.drawText(title_rect, Qt.AlignLeft | Qt.AlignVCenter, 
-                       f"{event_type}: {title}")
+                    f"{event_type}: {title}")
         
         # Draw course
         painter.setPen(QPen(QColor(TEXT_SECONDARY)))
         painter.setFont(QFont(option.font.family(), 9))
         painter.drawText(info_rect, Qt.AlignLeft | Qt.AlignVCenter, 
-                       f"{course} • {duration_weight}")
+                    f"{course} • {duration_weight}")
         
         # Draw status
         painter.drawText(status_rect, Qt.AlignLeft | Qt.AlignVCenter, 
-                       f"Status: {status} • {start_time}")
+                    f"Status: {status} • {start_time}")
         
         # Draw icons
-        icon_size = 24
+        icon_size = 20  # Reduced size
+        icon_spacing = 4  # Space between icons
         icon_y = content_rect.top() + (content_rect.height() - icon_size) // 2
         
-        # Slack icon
-        if has_slack and self._slack_icon:
-            slack_rect = QRect(content_rect.right() - icon_size * 2, icon_y, 
-                              icon_size, icon_size)
-            self._slack_icon.paint(painter, slack_rect)
+        # Calculate positions with better spacing
+        icon_x = content_rect.right() - icon_size
         
         # Email icon
         if has_email and self._email_icon:
-            email_rect = QRect(content_rect.right() - icon_size, icon_y, 
-                              icon_size, icon_size)
+            email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
             self._email_icon.paint(painter, email_rect)
+            icon_x -= (icon_size + icon_spacing)
+        
+        # Slack icon 
+        if has_slack and self._slack_icon:
+            slack_rect = QRect(icon_x, icon_y, icon_size, icon_size)
+            self._slack_icon.paint(painter, slack_rect)
         
         painter.restore()
 
+    def editorEvent(self, event, model, option, index):
+        """Handle events for the item."""
+        # Handle tooltips for icons
+        if event.type() == QEvent.ToolTip:
+            has_slack = index.data(ActivityModel.HasSlackRole)
+            has_email = index.data(ActivityModel.HasEmailRole)
+            
+            # Get item geometry
+            content_rect = option.rect.adjusted(10, 8, -10, -8)
+            icon_size = 20
+            icon_spacing = 4
+            icon_y = content_rect.top() + (content_rect.height() - icon_size) // 2
+            
+            # Calculate icon positions
+            icon_x = content_rect.right() - icon_size
+            email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
+            
+            icon_x -= (icon_size + icon_spacing)
+            slack_rect = QRect(icon_x, icon_y, icon_size, icon_size)
+            
+            # Check if mouse is over an icon and show tooltip
+            pos = event.pos()
+            if has_email and email_rect.contains(pos):
+                QToolTip.showText(event.globalPos(), "View related emails", option.widget)
+                return True
+            elif has_slack and slack_rect.contains(pos):
+                QToolTip.showText(event.globalPos(), "View Slack discussions", option.widget)
+                return True
+        
+        return super().editorEvent(event, model, option, index)
 
 class DateAccordionWidget(QWidget):
     """Widget for displaying activities grouped by date with accordion effect"""
@@ -726,9 +790,10 @@ class DateAccordionWidget(QWidget):
             return
         
         total_height = 0
+        option = QStyleOptionViewItem()  # Create a new QStyleOptionViewItem
         for i in range(self.proxy_model.rowCount()):
             index = self.proxy_model.index(i, 0)
-            total_height += self.delegate.size_hint(self.list_view.viewOptions(), index).height() + 2
+            total_height += self.delegate.sizeHint(option, index).height() + 2
         
         self.list_view.setFixedHeight(total_height)
         self.content_widget.setFixedHeight(total_height)
@@ -742,33 +807,32 @@ class ChatMessage(QFrame):
         super().__init__(parent)
         self.is_user = is_user
         self.text = text
-        self.setProperty("class", "chat-message-user" if is_user else "chat-message")
+        
+        # Use consistent class for visual styling, but change alignment in layout
+        self.setProperty("class", "chat-message")
         
         self.layout = QHBoxLayout(self)
         self.layout.setContentsMargins(8, 6, 8, 6)
         
-        # Avatar placeholder (could be replaced with actual avatars)
+        # Avatar placeholder with consistent size
         self.avatar = QLabel()
-        self.avatar.setFixedSize(32, 32)
+        self.avatar.setFixedSize(28, 28)  # Slightly smaller
+        self.avatar.setAlignment(Qt.AlignCenter)
         if is_user:
             self.avatar.setText("👤")
+            self.avatar.setToolTip("You")
         else:
             self.avatar.setText("🤖")
+            self.avatar.setToolTip("Assistant")
         
-        # Message text
+        # Message text with proper wrapping
         self.message_label = QLabel(text)
         self.message_label.setWordWrap(True)
+        self.message_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         
-        # Add widgets to layout based on user/assistant
-        if is_user:
-            self.layout.addStretch()
-            self.layout.addWidget(self.message_label)
-            self.layout.addWidget(self.avatar)
-        else:
-            self.layout.addWidget(self.avatar)
-            self.layout.addWidget(self.message_label)
-            self.layout.addStretch()
-
+        # Always use the same layout order regardless of user/assistant
+        self.layout.addWidget(self.avatar)
+        self.layout.addWidget(self.message_label, 1)  # Give text expanding priority
 
 class ChatWidget(QWidget):
     """Modern chat widget with infinite scroll"""
@@ -808,11 +872,15 @@ class ChatWidget(QWidget):
         self.chat_input.setPlaceholderText("Type your message...")
         self.chat_input.setProperty("class", "chat-input")
         self.chat_input.returnPressed.connect(self.send_message)
-        
+        self.chat_input.setToolTip("Type your message here")
+
         self.send_button = QPushButton("Send")
         self.send_button.setCursor(Qt.PointingHandCursor)
         self.send_button.clicked.connect(self.send_message)
-        
+        self.send_button.setToolTip("Send message")
+        self.send_button.setProperty("class", "send-button")
+        self.send_button.setStyleSheet(f"background-color: {PRIMARY}; color: {ON_PRIMARY}; border: none;")
+
         self.input_layout.addWidget(self.chat_input)
         self.input_layout.addWidget(self.send_button)
         
@@ -852,6 +920,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("REMOTE - Remote Education Management and Organization Tool for Education")
         self.resize(1200, 800)
+        self.setMinimumSize(800, 600)  # Set minimum window size
         
         # Get the absolute path to the icons directory
         self.icons_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icons")
@@ -878,8 +947,15 @@ class MainWindow(QMainWindow):
         self.content_area = self.create_content_area()
         self.sidebar_content_splitter.addWidget(self.content_area)
         
-        # Set initial splitter sizes
-        self.sidebar_content_splitter.setSizes([250, 950])
+        # Set initial splitter sizes with percentages for better responsiveness
+        screen = QApplication.instance().primaryScreen()
+        screen_geometry = screen.geometry()
+        screen_width = screen_geometry.width()
+        screen_height = screen_geometry.height()
+        
+        sidebar_width = min(250, int(screen_width * 0.2))  # 20% of screen or 250px max
+        content_width = screen_width - sidebar_width
+        self.sidebar_content_splitter.setSizes([sidebar_width, content_width])
         
         # Add sidebar and content splitter to the main vertical splitter
         self.content_chat_splitter.addWidget(self.sidebar_content_splitter)
@@ -889,7 +965,9 @@ class MainWindow(QMainWindow):
         self.content_chat_splitter.addWidget(self.chat_area)
         
         # Set initial sizes for content and chat areas
-        self.content_chat_splitter.setSizes([600, 200])
+        content_height = int(screen_height * 0.7)  # 70% for content
+        chat_height = screen_height - content_height
+        self.content_chat_splitter.setSizes([content_height, chat_height])
         
         # Add the splitters to the main layout
         self.main_layout.addWidget(self.content_chat_splitter)
@@ -949,8 +1027,13 @@ class MainWindow(QMainWindow):
         deadlines_layout.setSpacing(2)
         
         self.overdue_btn = FilterButton("Overdue")
+        self.overdue_btn.setToolTip("Include overdue assignments")
+
         self.submitted_btn = FilterButton("Submitted")
+        self.submitted_btn.setToolTip("Include submitted assignments")
+
         self.graded_btn = FilterButton("Graded")
+        self.graded_btn.setToolTip("Include graded assignments")
         
         deadlines_layout.addWidget(self.overdue_btn)
         deadlines_layout.addWidget(self.submitted_btn)
@@ -961,8 +1044,11 @@ class MainWindow(QMainWindow):
         events_layout.setContentsMargins(8, 16, 8, 8)
         events_layout.setSpacing(2)
         
-        self.live_events_btn = FilterButton("Live Events", is_selected=True)
+        self.live_events_btn = FilterButton("Current & Upcoming", is_selected=True)
+        self.live_events_btn.setToolTip("Include current and upcoming events")
+
         self.past_btn = FilterButton("Past")
+        self.past_btn.setToolTip("Include past events")
         
         events_layout.addWidget(self.live_events_btn)
         events_layout.addWidget(self.past_btn)
@@ -999,43 +1085,55 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(content_widget)
         layout.setContentsMargins(16, 16, 16, 16)
         
+        # Create header container to group title and date range
+        header_container = QWidget()
+        header_layout = QHBoxLayout(header_container)
+        header_layout.setContentsMargins(0, 0, 0, 8)
+        
         # Header with title
         header = QLabel("Key Activities")
         header.setProperty("class", "content-header")
-        layout.addWidget(header)
+        header_layout.addWidget(header)
         
-        # Date range selectors
+        # Date range selectors in the same row
         date_range_layout = QHBoxLayout()
+        date_range_layout.setSpacing(16)
         
         # From date (use compact date edit)
-        from_layout = QVBoxLayout()
+        from_layout = QHBoxLayout()
+        from_layout.setSpacing(8)
         from_label = QLabel("From date")
         from_label.setProperty("class", "date-label")
         self.from_date = CompactDateEdit()
         self.from_date.setDate(QDate.currentDate())
         self.from_date.dateChanged.connect(self.update_activity_filters)
+        self.from_date.setToolTip("Select start date for filtering activities")
         
         from_layout.addWidget(from_label)
         from_layout.addWidget(self.from_date)
         
         # To date (use compact date edit)
-        to_layout = QVBoxLayout()
+        to_layout = QHBoxLayout()
+        to_layout.setSpacing(8)
         to_label = QLabel("To date")
         to_label.setProperty("class", "date-label")
         self.to_date = CompactDateEdit()
         # Set default date range (today to 2 weeks from now)
         self.to_date.setDate(QDate.currentDate().addDays(14))
         self.to_date.dateChanged.connect(self.update_activity_filters)
+        self.to_date.setToolTip("Select end date for filtering activities")
         
         to_layout.addWidget(to_label)
         to_layout.addWidget(self.to_date)
         
         date_range_layout.addLayout(from_layout)
-        date_range_layout.addSpacing(16)
         date_range_layout.addLayout(to_layout)
         date_range_layout.addStretch()
         
-        layout.addLayout(date_range_layout)
+        header_layout.addLayout(date_range_layout)
+        
+        layout.addWidget(header_container)
+
         
         # Create the activity model
         self.activity_model = ActivityModel(self)
@@ -1277,4 +1375,4 @@ if __name__ == "__main__":
     window.show()
     
     # Start the event loop
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
