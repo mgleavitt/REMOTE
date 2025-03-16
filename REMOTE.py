@@ -14,12 +14,12 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QLineEdit, QScrollArea, QFrame, QSplitter,
     QTextEdit, QCalendarWidget, QDialog, QListView, QAbstractItemView,
-    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, QStyleOptionViewItem, QStyle
+    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, QStyleOptionViewItem, QStyle, QSizePolicy, QMessageBox
 )
 from PySide6.QtCore import (
     Qt, QDate, Signal, QAbstractListModel, QModelIndex, QRect,
     QSize, QPoint, QSortFilterProxyModel, QPropertyAnimation, 
-    QEasingCurve, Property, QObject, QEvent
+    QEasingCurve, Property, QObject, QEvent, QTimer
 )
 from PySide6.QtGui import (
     QIcon, QFontMetrics, QPainter, QColor, QBrush, QPen, QFont,
@@ -94,7 +94,9 @@ def get_stylesheet():
             font-size: 20px;
             font-weight: bold;
             color: {TEXT_PRIMARY};
-            margin-bottom: 12px;
+            margin: 0;
+            padding: 0;
+            line-height: 28px;  /* Match the height of the date widgets */
         }}
         
         .date-header {{
@@ -132,10 +134,10 @@ def get_stylesheet():
             background-color: {SIDEBAR_BG};
             border: 1px solid {BORDER_COLOR};
             border-radius: 4px;
-            padding: 4px 8px;
+            padding: 6px 10px;
             text-align: left;
             color: {TEXT_PRIMARY};
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }}
         
         .filter-button:checked {{
@@ -215,7 +217,9 @@ def get_stylesheet():
         .date-label {{
             font-size: 13px;
             color: {TEXT_SECONDARY};
-            margin-bottom: 2px;
+            margin: 0;
+            padding: 0;
+            line-height: 28px;  /* Match the height of the date widgets */
         }}
         
         .date-field {{
@@ -223,6 +227,7 @@ def get_stylesheet():
             border-radius: 4px;
             padding: 4px 8px;
             background-color: {SURFACE};
+            margin: 0;
         }}
         
         QDateEdit {{
@@ -230,6 +235,32 @@ def get_stylesheet():
             border-radius: 4px;
             padding: 4px 8px;
             background-color: {SURFACE};
+            color: {TEXT_PRIMARY};
+        }}
+        
+        QDateEdit::drop-down {{
+            border: none;
+            width: 20px;
+            subcontrol-origin: padding;
+            subcontrol-position: center right;
+            image: url({os.path.join(os.path.dirname(__file__), "icons", "calendar.svg")});
+        }}
+        
+        QDateEdit::down-arrow {{
+            image: url({os.path.join(os.path.dirname(__file__), "icons", "calendar.svg")});
+            width: 16px;
+            height: 16px;
+        }}
+        
+        QCalendarWidget {{
+            color: {TEXT_PRIMARY};
+        }}
+        
+        QCalendarWidget QAbstractItemView {{
+            color: {TEXT_PRIMARY};
+            background-color: {SURFACE};
+            selection-background-color: {SELECTED_BG};
+            selection-color: {TEXT_PRIMARY};
         }}
         
         QGroupBox {{
@@ -289,18 +320,26 @@ def get_stylesheet():
         }}
         
         .chat-message {{
-            background-color: {BACKGROUND};
+            background-color: {SURFACE};
+            border: 1px solid {BORDER_COLOR};
             border-radius: 12px;
             padding: 8px 12px;
             margin: 4px 0;
+            color: {TEXT_PRIMARY};
         }}
         
         .chat-message-user {{
             background-color: {SELECTED_BG};
+            border: 1px solid {PRIMARY};
             border-radius: 12px;
             padding: 8px 12px;
             margin: 4px 0;
             text-align: right;
+            color: {TEXT_PRIMARY};
+        }}
+        
+        .chat-message * {{
+            color: {TEXT_PRIMARY};
         }}
         
         .chat-header {{
@@ -494,6 +533,42 @@ class DateGroupProxyModel(QSortFilterProxyModel):
         return sorted(list(dates))
 
 
+class ActivityFilterProxyModel(QSortFilterProxyModel):
+    """Proxy model for filtering activities based on multiple criteria"""
+    
+    def __init__(self, parent=None):
+        """Initialize the activity filter proxy model."""
+        super().__init__(parent)
+        self._selected_courses = set()  # Set of selected course names
+        self._show_overdue = False
+        self._show_submitted = False
+        self._show_graded = False
+        self._show_current = False
+        self._show_current_upcoming = True  # Default to showing current & upcoming
+        self._show_past = False
+        self._from_date = QDate.currentDate()
+        self._to_date = QDate.currentDate().addDays(14)  # Default to 2 weeks range
+    
+    def set_filter_criteria(self, selected_courses, show_overdue, show_submitted,
+                          show_graded, show_current, show_current_upcoming, show_past,
+                          from_date, to_date):
+        """Set all filter criteria at once."""
+        self._selected_courses = set(selected_courses)
+        self._show_overdue = show_overdue
+        self._show_submitted = show_submitted
+        self._show_graded = show_graded
+        self._show_current = show_current
+        self._show_current_upcoming = show_current_upcoming
+        self._show_past = show_past
+        self._from_date = from_date
+        self._to_date = to_date
+        self.invalidateFilter()
+    
+    def filterAcceptsRow(self, source_row, source_parent):
+        """Return True if the row should be included based on all filter criteria."""
+        return True
+
+
 # UI Components
 class CompactDateEdit(QDateEdit):
     """Compact date editor with better UX for date ranges"""
@@ -506,6 +581,15 @@ class CompactDateEdit(QDateEdit):
         self.setDate(QDate.currentDate())
         self.setFixedHeight(28)
         self.setToolTip("Click to select a date")
+        
+        # Clear any selection and move cursor to end
+        line_edit = self.lineEdit()
+        line_edit.deselect()
+        line_edit.setCursorPosition(len(line_edit.text()))
+        
+        # Use multiple timers with different delays to ensure selection is cleared
+        QTimer.singleShot(0, self._clear_selection)
+        QTimer.singleShot(100, self._clear_selection)
         
         # Ensure calendar icon is visible
         # First try to set a standard icon if available
@@ -522,6 +606,26 @@ class CompactDateEdit(QDateEdit):
                 btn.setText("📅")
                 btn.setFixedWidth(28)
         self.setToolTip("Click to select a date")
+    
+    def _clear_selection(self):
+        """Clear any text selection and move cursor to end."""
+        line_edit = self.lineEdit()
+        line_edit.deselect()
+        line_edit.setCursorPosition(len(line_edit.text()))
+        line_edit.setSelection(0, 0)
+        
+        # Force an update
+        line_edit.update()
+    
+    def showEvent(self, event):
+        """Handle widget show event to ensure no text is selected."""
+        super().showEvent(event)
+        self._clear_selection()
+        
+    def focusInEvent(self, event):
+        """Handle focus in event to ensure no text is selected."""
+        super().focusInEvent(event)
+        QTimer.singleShot(0, self._clear_selection)
 
 
 class ClassButton(QPushButton):
@@ -545,7 +649,7 @@ class FilterButton(QPushButton):
         self.setCheckable(True)
         self.setChecked(is_selected)
         self.setCursor(Qt.PointingHandCursor)
-        self.setProperty("class", "filter-button")
+        self.setProperty("class", "class-button")  # Use the same class as ClassButton
 
 
 class ActivityItemDelegate(QStyledItemDelegate):
@@ -649,10 +753,51 @@ class ActivityItemDelegate(QStyledItemDelegate):
         
         painter.restore()
 
+    def helpEvent(self, event, view, option, index):
+        """Handle tooltip events."""
+        if event.type() != QEvent.ToolTip:
+            return False
+
+        has_slack = index.data(ActivityModel.HasSlackRole)
+        has_email = index.data(ActivityModel.HasEmailRole)
+        
+        # Get item geometry
+        content_rect = option.rect.adjusted(10, 8, -10, -8)
+        icon_size = 20
+        icon_spacing = 4
+        
+        # Calculate positions with better spacing
+        icon_x = content_rect.right() - icon_size
+        icon_y = content_rect.top() + (content_rect.height() - icon_size) // 2
+        
+        # Email icon rect
+        email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
+        
+        # Slack icon rect (to the left of email)
+        slack_rect = QRect(icon_x - (icon_size + icon_spacing), icon_y, icon_size, icon_size)
+        
+        # Get mouse position relative to the item
+        mouse_pos = event.pos()  # QHelpEvent uses pos()
+        
+        # Check if mouse is over any icon
+        over_email = has_email and email_rect.contains(mouse_pos)
+        over_slack = has_slack and slack_rect.contains(mouse_pos)
+        
+        if over_email:
+            QToolTip.showText(event.globalPos(), "View related emails", view)
+            return True
+        elif over_slack:
+            QToolTip.showText(event.globalPos(), "View Slack discussions", view)
+            return True
+        else:
+            QToolTip.hideText()
+            
+        return super().helpEvent(event, view, option, index)
+
     def editorEvent(self, event, model, option, index):
-        """Handle events for the item."""
-        # Handle tooltips for icons
-        if event.type() == QEvent.ToolTip:
+        """Handle editor events (mouse over, etc.)."""
+        # We need this for cursor changes and clicks
+        if event.type() in [QEvent.MouseMove, QEvent.MouseButtonRelease]:
             has_slack = index.data(ActivityModel.HasSlackRole)
             has_email = index.data(ActivityModel.HasEmailRole)
             
@@ -660,23 +805,48 @@ class ActivityItemDelegate(QStyledItemDelegate):
             content_rect = option.rect.adjusted(10, 8, -10, -8)
             icon_size = 20
             icon_spacing = 4
+            
+            # Calculate positions with better spacing
+            icon_x = content_rect.right() - icon_size
             icon_y = content_rect.top() + (content_rect.height() - icon_size) // 2
             
-            # Calculate icon positions
-            icon_x = content_rect.right() - icon_size
+            # Email icon rect
             email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
             
-            icon_x -= (icon_size + icon_spacing)
-            slack_rect = QRect(icon_x, icon_y, icon_size, icon_size)
+            # Slack icon rect (to the left of email)
+            slack_rect = QRect(icon_x - (icon_size + icon_spacing), icon_y, icon_size, icon_size)
             
-            # Check if mouse is over an icon and show tooltip
-            pos = event.pos()
-            if has_email and email_rect.contains(pos):
-                QToolTip.showText(event.globalPos(), "View related emails", option.widget)
-                return True
-            elif has_slack and slack_rect.contains(pos):
-                QToolTip.showText(event.globalPos(), "View Slack discussions", option.widget)
-                return True
+            # Get mouse position relative to the item
+            mouse_pos = event.position().toPoint()
+            
+            # Check if mouse is over any icon
+            over_email = has_email and email_rect.contains(mouse_pos)
+            over_slack = has_slack and slack_rect.contains(mouse_pos)
+            
+            if event.type() == QEvent.MouseMove:
+                if over_email or over_slack:
+                    option.widget.setCursor(Qt.PointingHandCursor)
+                else:
+                    option.widget.setCursor(Qt.ArrowCursor)
+            
+            # Handle clicks - as a fallback if tooltips don't work
+            elif event.type() == QEvent.MouseButtonRelease:
+                if over_email:
+                    title = index.data(ActivityModel.TitleRole)
+                    course = index.data(ActivityModel.CourseRole)
+                    QMessageBox.information(option.widget, 
+                                          "Email Action", 
+                                          f"View emails related to:\n{title}\nCourse: {course}",
+                                          QMessageBox.Ok)
+                    return True
+                elif over_slack:
+                    title = index.data(ActivityModel.TitleRole)
+                    course = index.data(ActivityModel.CourseRole)
+                    QMessageBox.information(option.widget, 
+                                          "Slack Action", 
+                                          f"View Slack discussions for:\n{title}\nCourse: {course}",
+                                          QMessageBox.Ok)
+                    return True
         
         return super().editorEvent(event, model, option, index)
 
@@ -743,6 +913,12 @@ class DateAccordionWidget(QWidget):
         self.list_view.setSelectionMode(QAbstractItemView.NoSelection)
         self.list_view.setFocusPolicy(Qt.NoFocus)
         
+        # Critical for tooltips and mouse tracking
+        self.list_view.setMouseTracking(True)
+        self.list_view.viewport().setAttribute(Qt.WA_MouseTracking, True)
+        self.list_view.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        self.list_view.viewport().setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        
         # Set up the model
         self.proxy_model = DateGroupProxyModel(self)
         self.proxy_model.setSourceModel(self.model)
@@ -753,6 +929,9 @@ class DateAccordionWidget(QWidget):
         self.delegate = ActivityItemDelegate(self, self.icons_dir)
         self.list_view.setItemDelegate(self.delegate)
         
+        # Install event filter to handle tooltips
+        self.list_view.viewport().installEventFilter(self)
+        
         self.content_layout.addWidget(self.list_view)
         
         self.layout.addWidget(self.content_widget)
@@ -762,6 +941,72 @@ class DateAccordionWidget(QWidget):
         self.separator.setFrameShape(QFrame.HLine)
         self.separator.setProperty("class", "separator")
         self.layout.addWidget(self.separator)
+        
+        # Update the content height
+        self.update_content_height()
+    
+    def eventFilter(self, obj, event):
+        """Filter events for child widgets."""
+        if obj == self.list_view.viewport():
+            if event.type() == QEvent.ToolTip:
+                # Get index at position
+                index = self.list_view.indexAt(event.pos())
+                if not index.isValid():
+                    return False
+                
+                # Get item geometry
+                rect = self.list_view.visualRect(index)
+                
+                # Get icon positions
+                has_slack = index.data(ActivityModel.HasSlackRole)
+                has_email = index.data(ActivityModel.HasEmailRole)
+                
+                # Calculate content rect
+                content_rect = rect.adjusted(10, 8, -10, -8)
+                icon_size = 20
+                icon_spacing = 4
+                
+                # Calculate positions with better spacing
+                icon_x = content_rect.right() - icon_size
+                icon_y = content_rect.top() + (content_rect.height() - icon_size) // 2
+                
+                # Email icon rect
+                email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
+                
+                # Slack icon rect (to the left of email)
+                slack_rect = QRect(icon_x - (icon_size + icon_spacing), icon_y, icon_size, icon_size)
+                
+                # Get mouse position relative to the item
+                mouse_pos = event.pos() - rect.topLeft()
+                
+                # Check if mouse is over any icon
+                over_email = has_email and email_rect.contains(mouse_pos)
+                over_slack = has_slack and slack_rect.contains(mouse_pos)
+                
+                if over_email:
+                    QToolTip.showText(event.globalPos(), "View related emails", self.list_view)
+                    return True
+                elif over_slack:
+                    QToolTip.showText(event.globalPos(), "View Slack discussions", self.list_view)
+                    return True
+                else:
+                    QToolTip.hideText()
+                
+        return super().eventFilter(obj, event)
+    
+    def update_content_height(self):
+        """Update the height of the content widget based on list view contents."""
+        if not self.expanded:
+            return
+        
+        total_height = 0
+        option = QStyleOptionViewItem()
+        for i in range(self.proxy_model.rowCount()):
+            index = self.proxy_model.index(i, 0)
+            total_height += self.delegate.sizeHint(option, index).height() + 2
+        
+        self.list_view.setFixedHeight(total_height)
+        self.content_widget.setFixedHeight(total_height)
     
     def toggle_expand(self):
         """Toggle the expanded/collapsed state."""
@@ -783,20 +1028,6 @@ class DateAccordionWidget(QWidget):
                     self.expand_btn.setIcon(QIcon(icon_path))
             else:
                 self.expand_btn.setText("▼")
-    
-    def update_content_height(self):
-        """Update the height of the content widget based on list view contents."""
-        if not self.expanded:
-            return
-        
-        total_height = 0
-        option = QStyleOptionViewItem()  # Create a new QStyleOptionViewItem
-        for i in range(self.proxy_model.rowCount()):
-            index = self.proxy_model.index(i, 0)
-            total_height += self.delegate.sizeHint(option, index).height() + 2
-        
-        self.list_view.setFixedHeight(total_height)
-        self.content_widget.setFixedHeight(total_height)
 
 
 class ChatMessage(QFrame):
@@ -925,6 +1156,9 @@ class MainWindow(QMainWindow):
         # Get the absolute path to the icons directory
         self.icons_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icons")
         
+        # Configure tooltips to be fully opaque
+        QApplication.instance().setStyleSheet("QToolTip { opacity: 255; }")
+        
         # Create central widget and main layout
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -977,6 +1211,11 @@ class MainWindow(QMainWindow):
             os.makedirs(self.icons_dir)
             self.create_default_icons()
         
+        # Create the activity model and proxy model
+        self.activity_model = ActivityModel(self)
+        self.filter_proxy_model = ActivityFilterProxyModel(self)
+        self.filter_proxy_model.setSourceModel(self.activity_model)
+        
         # Load sample data
         self.load_sample_data()
         
@@ -1010,51 +1249,67 @@ class MainWindow(QMainWindow):
         # Add some default classes
         self.add_class("Database Management Systems", True)
         self.add_class("Human-Centered Artificial Intelligence", True)
-        self.add_class("Data Science", False)
+        self.add_class("Data Science", True)
         
         layout.addWidget(self.classes_container)
         
         # Separator
-        separator = QFrame()
-        separator.setFrameShape(QFrame.HLine)
-        separator.setProperty("class", "separator")
-        layout.addWidget(separator)
+        separator1 = QFrame()
+        separator1.setFrameShape(QFrame.HLine)
+        separator1.setProperty("class", "separator")
+        layout.addWidget(separator1)
         
-        # Filters section - grouped with headers
-        deadlines_group = QGroupBox("Deadlines")
-        deadlines_layout = QVBoxLayout(deadlines_group)
-        deadlines_layout.setContentsMargins(8, 16, 8, 8)
-        deadlines_layout.setSpacing(2)
+        # Deadlines section
+        deadlines_label = QLabel("Deadlines")
+        deadlines_label.setProperty("class", "section-header")
+        layout.addWidget(deadlines_label)
         
-        self.overdue_btn = FilterButton("Overdue")
+        deadlines_container = QWidget()
+        deadlines_layout = QVBoxLayout(deadlines_container)
+        deadlines_layout.setContentsMargins(0, 0, 0, 0)
+        deadlines_layout.setSpacing(4)
+        
+        self.overdue_btn = FilterButton("Overdue", is_selected=True)
         self.overdue_btn.setToolTip("Include overdue assignments")
-
-        self.submitted_btn = FilterButton("Submitted")
+        self.submitted_btn = FilterButton("Submitted", is_selected=True)
         self.submitted_btn.setToolTip("Include submitted assignments")
-
-        self.graded_btn = FilterButton("Graded")
+        self.graded_btn = FilterButton("Graded", is_selected=True)
         self.graded_btn.setToolTip("Include graded assignments")
+        self.current_btn = FilterButton("Current", is_selected=True)
+        self.current_btn.setToolTip("Include current (not overdue/submitted/graded) assignments")
         
         deadlines_layout.addWidget(self.overdue_btn)
         deadlines_layout.addWidget(self.submitted_btn)
         deadlines_layout.addWidget(self.graded_btn)
+        deadlines_layout.addWidget(self.current_btn)
         
-        events_group = QGroupBox("Events")
-        events_layout = QVBoxLayout(events_group)
-        events_layout.setContentsMargins(8, 16, 8, 8)
-        events_layout.setSpacing(2)
+        layout.addWidget(deadlines_container)
+        
+        # Separator
+        separator2 = QFrame()
+        separator2.setFrameShape(QFrame.HLine)
+        separator2.setProperty("class", "separator")
+        layout.addWidget(separator2)
+        
+        # Events section
+        events_label = QLabel("Events")
+        events_label.setProperty("class", "section-header")
+        layout.addWidget(events_label)
+        
+        events_container = QWidget()
+        events_layout = QVBoxLayout(events_container)
+        events_layout.setContentsMargins(0, 0, 0, 0)
+        events_layout.setSpacing(4)
         
         self.live_events_btn = FilterButton("Current & Upcoming", is_selected=True)
         self.live_events_btn.setToolTip("Include current and upcoming events")
-
-        self.past_btn = FilterButton("Past")
+        self.past_btn = FilterButton("Past", is_selected=True)
         self.past_btn.setToolTip("Include past events")
         
         events_layout.addWidget(self.live_events_btn)
         events_layout.addWidget(self.past_btn)
         
-        layout.addWidget(deadlines_group)
-        layout.addWidget(events_group)
+        layout.addWidget(events_container)
         
         # Add stretch to push everything to the top
         layout.addStretch()
@@ -1095,11 +1350,16 @@ class MainWindow(QMainWindow):
         header.setProperty("class", "content-header")
         header_layout.addWidget(header)
         
-        # Date range selectors in the same row
-        date_range_layout = QHBoxLayout()
+        # Date range container widget to enable right alignment
+        date_range_container = QWidget()
+        date_range_container.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+        
+        # Date range layout inside container
+        date_range_layout = QHBoxLayout(date_range_container)
+        date_range_layout.setContentsMargins(0, 0, 0, 0)
         date_range_layout.setSpacing(16)
         
-        # From date (use compact date edit)
+        # From date
         from_layout = QHBoxLayout()
         from_layout.setSpacing(8)
         from_label = QLabel("From date")
@@ -1112,13 +1372,12 @@ class MainWindow(QMainWindow):
         from_layout.addWidget(from_label)
         from_layout.addWidget(self.from_date)
         
-        # To date (use compact date edit)
+        # To date
         to_layout = QHBoxLayout()
         to_layout.setSpacing(8)
         to_label = QLabel("To date")
         to_label.setProperty("class", "date-label")
         self.to_date = CompactDateEdit()
-        # Set default date range (today to 2 weeks from now)
         self.to_date.setDate(QDate.currentDate().addDays(14))
         self.to_date.dateChanged.connect(self.update_activity_filters)
         self.to_date.setToolTip("Select end date for filtering activities")
@@ -1126,17 +1385,15 @@ class MainWindow(QMainWindow):
         to_layout.addWidget(to_label)
         to_layout.addWidget(self.to_date)
         
+        # Add from and to layouts to date range layout
         date_range_layout.addLayout(from_layout)
         date_range_layout.addLayout(to_layout)
-        date_range_layout.addStretch()
         
-        header_layout.addLayout(date_range_layout)
+        # Add stretch to push header left and date range right
+        header_layout.addStretch()
+        header_layout.addWidget(date_range_container)
         
         layout.addWidget(header_container)
-
-        
-        # Create the activity model
-        self.activity_model = ActivityModel(self)
         
         # Scrollable area for activities
         self.activities_scroll = QScrollArea()
@@ -1161,15 +1418,17 @@ class MainWindow(QMainWindow):
         # Clear current content
         self.clear_activities_layout()
         
-        # Get unique dates from model
-        proxy = DateGroupProxyModel(self)
-        proxy.setSourceModel(self.activity_model)
-        
-        dates = proxy.get_unique_dates()
+        # Get unique dates from filtered model
+        dates = set()
+        for row in range(self.filter_proxy_model.rowCount()):
+            index = self.filter_proxy_model.index(row, 0)
+            date = self.filter_proxy_model.data(index, ActivityModel.DateRole)
+            if date:
+                dates.add(date)
         
         # Create a date section for each unique date
-        for date in dates:
-            date_section = DateAccordionWidget(date, self.activity_model, self, self.icons_dir)
+        for date in sorted(list(dates)):
+            date_section = DateAccordionWidget(date, self.filter_proxy_model, self, self.icons_dir)
             self.activities_layout.insertWidget(self.activities_layout.count() - 1, date_section)
             date_section.update_content_height()
     
@@ -1183,8 +1442,39 @@ class MainWindow(QMainWindow):
     
     def update_activity_filters(self):
         """Update activity filters based on selected classes and filters."""
-        # In a real application, this would apply complex filtering
-        # For this prototype, we'll just reload the sample data
+        # Get selected courses
+        selected_courses = set()
+        for i in range(self.classes_layout.count()):
+            widget = self.classes_layout.itemAt(i).widget()
+            if isinstance(widget, ClassButton) and widget.isChecked():
+                selected_courses.add(widget.text())
+        
+        # Get filter states
+        show_overdue = self.overdue_btn.isChecked()
+        show_submitted = self.submitted_btn.isChecked()
+        show_graded = self.graded_btn.isChecked()
+        show_current = self.current_btn.isChecked()
+        show_current_upcoming = self.live_events_btn.isChecked()
+        show_past = self.past_btn.isChecked()
+        
+        # Get date range
+        from_date = self.from_date.date()
+        to_date = self.to_date.date()
+        
+        # Update proxy model filters
+        self.filter_proxy_model.set_filter_criteria(
+            selected_courses=selected_courses,
+            show_overdue=show_overdue,
+            show_submitted=show_submitted,
+            show_graded=show_graded,
+            show_current=show_current,
+            show_current_upcoming=show_current_upcoming,
+            show_past=show_past,
+            from_date=from_date,
+            to_date=to_date
+        )
+        
+        # Repopulate the activities view
         self.populate_activity_dates()
     
     def create_chat_area(self):
