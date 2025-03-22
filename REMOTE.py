@@ -539,15 +539,15 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None):
         """Initialize the activity filter proxy model."""
         super().__init__(parent)
-        self._selected_courses = set()  # Set of selected course names
+        self._selected_courses = set()
         self._show_overdue = False
         self._show_submitted = False
         self._show_graded = False
         self._show_current = False
-        self._show_current_upcoming = True  # Default to showing current & upcoming
+        self._show_current_upcoming = True
         self._show_past = False
-        self._from_date = QDate.currentDate()
-        self._to_date = QDate.currentDate().addDays(14)  # Default to 2 weeks range
+        self._from_date = QDate.currentDate().addDays(-14)  # Default: 2 weeks ago
+        self._to_date = QDate.currentDate().addDays(14)     # Default: 2 weeks ahead
     
     def set_filter_criteria(self, selected_courses, show_overdue, show_submitted,
                           show_graded, show_current, show_current_upcoming, show_past,
@@ -567,23 +567,39 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
     def _is_deadline_item(self, index):
         """Check if the item is a deadline item (has submission status)."""
         event_type = index.data(ActivityModel.EventTypeRole)
-        return event_type == "Assignment"
+        if not event_type:
+            return False
+        
+        # Case-insensitive check for assignment types
+        return event_type.lower() == "assignment"
     
     def _is_event_item(self, index):
         """Check if the item is an event item (no submission status)."""
         event_type = index.data(ActivityModel.EventTypeRole)
-        return event_type in ["Lecture", "Office Hours"]
+        if not event_type:
+            return False
+        
+        # Case-insensitive check for event types
+        event_type_lower = event_type.lower()
+        return event_type_lower in ["lecture", "office hours"]
     
     def _parse_date(self, date_str):
         """Parse date string into QDate object."""
         try:
             # Convert date string (e.g., "Mar 16") to QDate
             item_date = QDate.fromString(date_str, "MMM dd")
+            
+            # Check if the date is valid
+            if not item_date.isValid():
+                print(f"Warning: Invalid date format: '{date_str}'")
+                return None
+            
             # Set the year to current year since it's not in the date string
             current_year = QDate.currentDate().year()
             item_date = item_date.addYears(current_year - item_date.year())
             return item_date
-        except:
+        except Exception as e:
+            print(f"Error parsing date '{date_str}': {str(e)}")
             return None
     
     def _evaluate_date_range(self, index):
@@ -601,7 +617,7 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
     def _evaluate_courses_filter(self, index):
         """Evaluate if the item belongs to any selected course."""
         if not self._selected_courses:
-            return True  # If no courses selected, show all
+            return False  # If no courses selected, hide all items
             
         course = index.data(ActivityModel.CourseRole)
         return course in self._selected_courses
@@ -617,6 +633,7 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
             return False
             
         status = index.data(ActivityModel.StatusRole)
+        status_lower = status.lower() if status else ""
         date_str = index.data(ActivityModel.DateRole)
         item_date = self._parse_date(date_str)
         if not item_date:
@@ -624,14 +641,14 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
             
         current_date = QDate.currentDate()
         
-        # Check each sub-filter
-        if self._show_overdue and item_date < current_date and "Due" in status:
+        # Check each sub-filter with case-insensitive comparison
+        if self._show_overdue and item_date < current_date and "due" in status_lower:
             return True
-        if self._show_submitted and "Submitted" in status:
+        if self._show_submitted and "submitted" in status_lower:
             return True
-        if self._show_graded and "Graded" in status:
+        if self._show_graded and "graded" in status_lower:
             return True
-        if self._show_current and "Due" in status and item_date >= current_date:
+        if self._show_current and "due" in status_lower and item_date >= current_date:
             return True
             
         return False
@@ -962,6 +979,16 @@ class ActivityItemDelegate(QStyledItemDelegate):
         
         return super().editorEvent(event, model, option, index)
 
+class DateOnlyProxyModel(QSortFilterProxyModel):
+    def __init__(self, date_value, parent=None):
+        super().__init__(parent)
+        self.date_value = date_value
+        
+    def filterAcceptsRow(self, source_row, source_parent):
+        index = self.sourceModel().index(source_row, 0, source_parent)
+        item_date = index.data(ActivityModel.DateRole)
+        return item_date == self.date_value
+
 class DateAccordionWidget(QWidget):
     """Widget for displaying activities grouped by date with accordion effect"""
     
@@ -1046,10 +1073,9 @@ class DateAccordionWidget(QWidget):
         self.list_view.viewport().setAttribute(Qt.WA_TransparentForMouseEvents, False)
         
         # Set up the model
-        self.proxy_model = DateGroupProxyModel(self)
-        self.proxy_model.setSourceModel(self.model)
-        self.proxy_model.set_current_date(self.date)
-        self.list_view.setModel(self.proxy_model)
+        self.date_only_model = DateOnlyProxyModel(self.date, self)
+        self.date_only_model.setSourceModel(self.model)
+        self.list_view.setModel(self.date_only_model)
         
         # Set up delegate
         self.delegate = ActivityItemDelegate(self, self.icons_dir)
@@ -1121,8 +1147,8 @@ class DateAccordionWidget(QWidget):
         
         total_height = 0
         option = QStyleOptionViewItem()
-        for i in range(self.proxy_model.rowCount()):
-            index = self.proxy_model.index(i, 0)
+        for i in range(self.date_only_model.rowCount()):
+            index = self.date_only_model.index(i, 0)
             total_height += self.delegate.sizeHint(option, index).height() + 2
         
         self.list_view.setFixedHeight(total_height)
@@ -1545,6 +1571,14 @@ class MainWindow(QMainWindow):
             date = self.filter_proxy_model.data(index, ActivityModel.DateRole)
             if date:
                 dates.add(date)
+        
+        # If no dates (no matching activities), show a message
+        if not dates:
+            no_results_label = QLabel("No activities match the current filters")
+            no_results_label.setAlignment(Qt.AlignCenter)
+            no_results_label.setStyleSheet(f"color: {TEXT_SECONDARY}; margin: 20px;")
+            self.activities_layout.insertWidget(self.activities_layout.count() - 1, no_results_label)
+            return
         
         # Create a date section for each unique date
         for date in sorted(list(dates)):
