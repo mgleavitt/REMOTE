@@ -501,7 +501,7 @@ class DateGroupProxyModel(QSortFilterProxyModel):
         self._current_date = date
         self.invalidateFilter()
     
-    def filter_accepts_row(self, source_row, source_parent):
+    def filterAcceptsRow(self, source_row, source_parent):
         """Return True if the row should be included in the model."""
         if not self._current_date:
             return True
@@ -564,8 +564,120 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
         self._to_date = to_date
         self.invalidateFilter()
     
+    def _is_deadline_item(self, index):
+        """Check if the item is a deadline item (has submission status)."""
+        event_type = index.data(ActivityModel.EventTypeRole)
+        return event_type == "Assignment"
+    
+    def _is_event_item(self, index):
+        """Check if the item is an event item (no submission status)."""
+        event_type = index.data(ActivityModel.EventTypeRole)
+        return event_type in ["Lecture", "Office Hours"]
+    
+    def _parse_date(self, date_str):
+        """Parse date string into QDate object."""
+        try:
+            # Convert date string (e.g., "Mar 16") to QDate
+            item_date = QDate.fromString(date_str, "MMM dd")
+            # Set the year to current year since it's not in the date string
+            current_year = QDate.currentDate().year()
+            item_date = item_date.addYears(current_year - item_date.year())
+            return item_date
+        except:
+            return None
+    
+    def _evaluate_date_range(self, index):
+        """Evaluate if the item's date falls within the specified range."""
+        date_str = index.data(ActivityModel.DateRole)
+        if not date_str:
+            return False
+            
+        item_date = self._parse_date(date_str)
+        if not item_date:
+            return False
+            
+        return self._from_date <= item_date <= self._to_date
+    
+    def _evaluate_courses_filter(self, index):
+        """Evaluate if the item belongs to any selected course."""
+        if not self._selected_courses:
+            return True  # If no courses selected, show all
+            
+        course = index.data(ActivityModel.CourseRole)
+        return course in self._selected_courses
+    
+    def _evaluate_deadlines_filter(self, index):
+        """Evaluate if the item passes any of the deadline sub-filters."""
+        if not self._is_deadline_item(index):
+            return True  # Not a deadline item, so passes this filter
+            
+        # If no deadline filters are selected, don't show any deadline items
+        if not any([self._show_overdue, self._show_submitted, 
+                   self._show_graded, self._show_current]):
+            return False
+            
+        status = index.data(ActivityModel.StatusRole)
+        date_str = index.data(ActivityModel.DateRole)
+        item_date = self._parse_date(date_str)
+        if not item_date:
+            return False
+            
+        current_date = QDate.currentDate()
+        
+        # Check each sub-filter
+        if self._show_overdue and item_date < current_date and "Due" in status:
+            return True
+        if self._show_submitted and "Submitted" in status:
+            return True
+        if self._show_graded and "Graded" in status:
+            return True
+        if self._show_current and "Due" in status and item_date >= current_date:
+            return True
+            
+        return False
+    
+    def _evaluate_events_filter(self, index):
+        """Evaluate if the item passes any of the events sub-filters."""
+        if not self._is_event_item(index):
+            return True  # Not an event item, so passes this filter
+            
+        # If no event filters are selected, don't show any event items
+        if not any([self._show_current_upcoming, self._show_past]):
+            return False
+            
+        date_str = index.data(ActivityModel.DateRole)
+        item_date = self._parse_date(date_str)
+        if not item_date:
+            return False
+            
+        current_date = QDate.currentDate()
+        
+        # Check each sub-filter
+        if self._show_current_upcoming and item_date >= current_date:
+            return True
+        if self._show_past and item_date < current_date:
+            return True
+            
+        return False
+    
     def filterAcceptsRow(self, source_row, source_parent):
         """Return True if the row should be included based on all filter criteria."""
+        index = self.sourceModel().index(source_row, 0, source_parent)
+        
+        # Apply date range filter first
+        if not self._evaluate_date_range(index):
+            return False
+            
+        # Then check each top-level filter
+        if not self._evaluate_courses_filter(index):
+            return False
+            
+        if not self._evaluate_deadlines_filter(index):
+            return False
+            
+        if not self._evaluate_events_filter(index):
+            return False
+            
         return True
 
 
@@ -869,10 +981,16 @@ class DateAccordionWidget(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         
-        # Header widget
+        # Header widget with explicit styling
         self.header_widget = QWidget()
+        self.header_widget.setStyleSheet(f"""
+            QWidget {{
+                background-color: {BACKGROUND};
+                border-bottom: 1px solid {BORDER_COLOR};
+            }}
+        """)
         self.header_layout = QHBoxLayout(self.header_widget)
-        self.header_layout.setContentsMargins(4, 4, 4, 4)
+        self.header_layout.setContentsMargins(8, 4, 8, 4)
         
         # Expand/collapse button
         self.expand_btn = QPushButton()
@@ -889,9 +1007,17 @@ class DateAccordionWidget(QWidget):
         else:
             self.expand_btn.setText("▲")
         
-        # Date label
+        # Date label with explicit styling
         self.date_label = QLabel(self.date)
-        self.date_label.setProperty("class", "date-header")
+        self.date_label.setStyleSheet(f"""
+            QLabel {{
+                font-size: 14px;
+                font-weight: bold;
+                color: {TEXT_PRIMARY};
+                padding: 4px 8px;
+                background-color: {BACKGROUND};
+            }}
+        """)
         
         self.header_layout.addWidget(self.expand_btn)
         self.header_layout.addWidget(self.date_label)
@@ -935,12 +1061,6 @@ class DateAccordionWidget(QWidget):
         self.content_layout.addWidget(self.list_view)
         
         self.layout.addWidget(self.content_widget)
-        
-        # Add a separator line
-        self.separator = QFrame()
-        self.separator.setFrameShape(QFrame.HLine)
-        self.separator.setProperty("class", "separator")
-        self.layout.addWidget(self.separator)
         
         # Update the content height
         self.update_content_height()
