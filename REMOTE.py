@@ -609,7 +609,7 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
             current_year = QDate.currentDate().year()
             item_date = item_date.addYears(current_year - item_date.year())
             return item_date
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             print(f"Error parsing date '{date_str}': {str(e)}")
             return None
     
@@ -1705,42 +1705,48 @@ class MainWindow(QMainWindow):
     
     def update_activity_filters(self):
         """Update activity filters based on selected classes and filters."""
-        # Get selected courses
-        selected_courses = set()
-        for i in range(self.classes_layout.count()):
-            widget = self.classes_layout.itemAt(i).widget()
-            if isinstance(widget, ClassButton) and widget.isChecked():
-                selected_courses.add(widget.text())
-        
-        # Get filter states
-        show_overdue = self.overdue_btn.isChecked()
-        show_submitted = self.submitted_btn.isChecked()
-        show_graded = self.graded_btn.isChecked()
-        show_due = self.due_btn.isChecked()
-        show_past_events = self.past_events_btn.isChecked()
-        show_now_events = self.now_events_btn.isChecked()
-        show_upcoming_events = self.upcoming_events_btn.isChecked()
-        
-        # Get date range
-        from_date = self.from_date.date()
-        to_date = self.to_date.date()
-        
-        # Update proxy model filters
-        self.filter_proxy_model.set_filter_criteria(
-            selected_courses=selected_courses,
-            show_overdue=show_overdue,
-            show_submitted=show_submitted,
-            show_graded=show_graded,
-            show_due=show_due,
-            show_past_events=show_past_events,
-            show_now_events=show_now_events,
-            show_upcoming_events=show_upcoming_events,
-            from_date=from_date,
-            to_date=to_date
-        )
-        
-        # Repopulate the activities view
-        self.populate_activity_dates()
+        try:
+            # Get selected courses
+            selected_courses = set()
+            for i in range(self.classes_layout.count()):
+                widget = self.classes_layout.itemAt(i).widget()
+                if isinstance(widget, ClassButton) and widget.isChecked():
+                    selected_courses.add(widget.text())
+            
+            # Get filter states
+            show_overdue = self.overdue_btn.isChecked()
+            show_submitted = self.submitted_btn.isChecked()
+            show_graded = self.graded_btn.isChecked()
+            show_due = self.due_btn.isChecked()
+            show_past_events = self.past_events_btn.isChecked()
+            show_now_events = self.now_events_btn.isChecked()
+            show_upcoming_events = self.upcoming_events_btn.isChecked()
+            
+            # Get date range
+            from_date = self.from_date.date()
+            to_date = self.to_date.date()
+            
+            # Update proxy model filters
+            self.filter_proxy_model.set_filter_criteria(
+                selected_courses=selected_courses,
+                show_overdue=show_overdue,
+                show_submitted=show_submitted,
+                show_graded=show_graded,
+                show_due=show_due,
+                show_past_events=show_past_events,
+                show_now_events=show_now_events,
+                show_upcoming_events=show_upcoming_events,
+                from_date=from_date,
+                to_date=to_date
+            )
+            
+            # Repopulate the activities view
+            self.populate_activity_dates()
+            
+        except (AttributeError, KeyError) as e:
+            print(f"Error updating activity filters: {str(e)}")
+            # Reset all filters to unchecked state
+            self._reset_filters()
     
     def create_chat_area(self):
         """Create the chat area with modern chat interface.

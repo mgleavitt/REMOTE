@@ -6,8 +6,8 @@ import logging
 from datetime import datetime
 from enum import Enum
 from typing import Dict, Any, Optional
-import pytz
 import time
+import pytz
 
 from .base_agent import BaseAgent
 
@@ -53,13 +53,14 @@ class DataAgentCourseraSim(BaseAgent):
     def __init__(self):
         """Initialize the Coursera data agent."""
         super().__init__()
-        self._current_year = datetime.now().year
-        
+        self._data: list = []
+        self._current_year: int = datetime.now().year
+
         # Get local timezone using system timezone name
         tz_abbr = time.tzname[0]
         tz_name = TZ_MAPPING.get(tz_abbr, 'UTC')  # Default to UTC if mapping not found
-        self._local_tz = pytz.timezone(tz_name)
-        logger.info(f"Using timezone: {tz_name} (mapped from {tz_abbr})")
+        self._local_tz: pytz.timezone = pytz.timezone(tz_name)
+        logger.info("Using timezone: %s (mapped from %s)", tz_name, tz_abbr)
 
     def load_data(self, source: str) -> bool:
         """Load and parse data from a Coursera CSV file.
@@ -89,11 +90,15 @@ class DataAgentCourseraSim(BaseAgent):
         except FileNotFoundError:
             logger.error("File not found: %s", source)
             return False
-        except Exception as e:
-            logger.error("Error loading data: %s", str(e))
+        except (IOError, OSError) as e:
+            logger.error("Error reading file: %s", str(e))
+            return False
+        except csv.Error as e:
+            logger.error("CSV parsing error: %s", str(e))
             return False
 
-    def _parse_status(self, status: str, date: datetime, event_type: str, start_time: str = None) -> str:
+    def _parse_status(self, status: str, date: datetime, event_type: str,
+                     start_time: str = None) -> str:
         """Parse and normalize the status string.
         
         Args:
@@ -112,23 +117,75 @@ class DataAgentCourseraSim(BaseAgent):
             # Parse start time if provided
             if start_time and start_time != 'N/A':
                 try:
-                    # Parse time in format "HH:MM AM/PM"
-                    event_time = datetime.strptime(start_time, "%I:%M %p")
-                    # Combine date and time
-                    event_datetime = date.replace(
-                        hour=event_time.hour,
-                        minute=event_time.minute
-                    )
-                    
-                    # Determine status based on current time
-                    if event_datetime < current_date:
-                        return LiveEventStatus.PAST.value
-                    elif event_datetime > current_date:
-                        return LiveEventStatus.UPCOMING.value
-                    else:
-                        return LiveEventStatus.NOW.value
-                except ValueError:
-                    logger.warning(f"Could not parse start time: {start_time}")
+                    # Split time string into parts
+                    parts = start_time.split()
+                    if len(parts) >= 3:  # Has timezone (e.g., "9:00 AM PDT")
+                        time_str = ' '.join(parts[:-1])  # "9:00 AM"
+                        tz_abbr = parts[-1]  # "PDT"
+
+                        # Get timezone from mapping
+                        tz_name = TZ_MAPPING.get(tz_abbr)
+                        if not tz_name:
+                            logger.warning(
+                                "Unknown timezone abbreviation: %s, using local timezone",
+                                tz_abbr)
+                            tz_name = self._local_tz.zone
+
+                        # Parse time in format "HH:MM AM/PM"
+                        event_time = datetime.strptime(time_str, "%I:%M %p")
+
+                        # Convert date to naive datetime if it's timezone-aware
+                        if date.tzinfo is not None:
+                            date = date.replace(tzinfo=None)
+
+                        # Combine date and time
+                        event_datetime = date.replace(
+                            hour=event_time.hour,
+                            minute=event_time.minute
+                        )
+
+                        # Localize the datetime to the event's timezone
+                        event_tz = pytz.timezone(tz_name)
+                        event_datetime = event_tz.localize(event_datetime)
+
+                        # Convert to local timezone for comparison
+                        event_datetime_local = event_datetime.astimezone(
+                            self._local_tz)
+
+                        # Determine status based on current time
+                        if event_datetime_local < current_date:
+                            return LiveEventStatus.PAST.value
+                        elif event_datetime_local > current_date:
+                            return LiveEventStatus.UPCOMING.value
+                        else:
+                            return LiveEventStatus.NOW.value
+                    else:  # No timezone (e.g., "9:00 AM")
+                        # Parse time in format "HH:MM AM/PM"
+                        event_time = datetime.strptime(start_time, "%I:%M %p")
+
+                        # Convert date to naive datetime if it's timezone-aware
+                        if date.tzinfo is not None:
+                            date = date.replace(tzinfo=None)
+
+                        # Combine date and time
+                        event_datetime = date.replace(
+                            hour=event_time.hour,
+                            minute=event_time.minute
+                        )
+                        # Assume local timezone
+                        event_datetime = self._local_tz.localize(event_datetime)
+
+                        # Determine status based on current time
+                        if event_datetime < current_date:
+                            return LiveEventStatus.PAST.value
+                        elif event_datetime > current_date:
+                            return LiveEventStatus.UPCOMING.value
+                        else:
+                            return LiveEventStatus.NOW.value
+                except ValueError as e:
+                    logger.warning(
+                        "Could not parse start time: %s - %s",
+                        start_time, str(e))
                     return LiveEventStatus.UPCOMING.value
             else:
                 # If no start time, use date only
@@ -167,7 +224,8 @@ class DataAgentCourseraSim(BaseAgent):
         try:
             date_str = row['Date']
             # Create datetime with current year and localize it
-            date = datetime.strptime(f"{date_str} {self._current_year}", "%b %d %Y")
+            date = datetime.strptime(f"{date_str} {self._current_year}",
+                                   "%b %d %Y")
             date = self._local_tz.localize(date)
         except ValueError as e:
             raise ValueError(f"Invalid date format: {date_str}") from e
@@ -183,7 +241,8 @@ class DataAgentCourseraSim(BaseAgent):
         start_time = row.get('Start Time', 'N/A')
 
         # Parse status with event type and start time
-        status = self._parse_status(row['Status'], date, parsed_event_type, start_time)
+        status = self._parse_status(row['Status'], date, parsed_event_type,
+                                  start_time)
 
         # Create activity dictionary with UI-compatible keys
         activity = {
