@@ -26,6 +26,9 @@ from PySide6.QtGui import (
     QCursor, QPixmap, QStandardItemModel, QStandardItem
 )
 
+# Import data agent
+from agents.data_agent_coursera_sim import DataAgentCourseraSim
+
 # Define a style module directly here
 # Material Design color palette
 PRIMARY = "#6200EE"
@@ -383,10 +386,9 @@ class ActivityModel(QAbstractListModel):
     TitleRole = Qt.UserRole + 3
     CourseRole = Qt.UserRole + 4
     StatusRole = Qt.UserRole + 5
-    DurationWeightRole = Qt.UserRole + 6
-    StartTimeRole = Qt.UserRole + 7
-    HasSlackRole = Qt.UserRole + 8
-    HasEmailRole = Qt.UserRole + 9
+    StartTimeRole = Qt.UserRole + 6
+    HasSlackRole = Qt.UserRole + 7
+    HasEmailRole = Qt.UserRole + 8
     
     def __init__(self, parent=None):
         """Initialize the activity model."""
@@ -407,7 +409,10 @@ class ActivityModel(QAbstractListModel):
         if role == Qt.DisplayRole:
             return activity.get('Title', '')
         elif role == self.DateRole:
-            return activity.get('Date', '')
+            date = activity.get('Date')
+            if isinstance(date, datetime):
+                return date.strftime("%b %d")
+            return date
         elif role == self.EventTypeRole:
             return activity.get('Event Type', '')
         elif role == self.TitleRole:
@@ -416,14 +421,12 @@ class ActivityModel(QAbstractListModel):
             return activity.get('Course', '')
         elif role == self.StatusRole:
             return activity.get('Status', '')
-        elif role == self.DurationWeightRole:
-            return activity.get('Duration/Weight', '')
         elif role == self.StartTimeRole:
             return activity.get('Start Time', '')
         elif role == self.HasSlackRole:
-            return activity.get('HasSlack', False)
+            return activity.get('HasSlack')
         elif role == self.HasEmailRole:
-            return activity.get('HasEmail', False)
+            return activity.get('HasEmail')
             
         return None
     
@@ -436,7 +439,6 @@ class ActivityModel(QAbstractListModel):
             self.TitleRole: b'title',
             self.CourseRole: b'course',
             self.StatusRole: b'status',
-            self.DurationWeightRole: b'durationWeight',
             self.StartTimeRole: b'startTime',
             self.HasSlackRole: b'hasSlack',
             self.HasEmailRole: b'hasEmail'
@@ -534,7 +536,14 @@ class DateGroupProxyModel(QSortFilterProxyModel):
 
 
 class ActivityFilterProxyModel(QSortFilterProxyModel):
-    """Proxy model for filtering activities based on multiple criteria"""
+    """Proxy model for filtering activities based on multiple criteria.
+    
+    This model filters activities based on:
+    - Selected courses
+    - Deadline status (Overdue, Submitted, Graded, Due)
+    - Event status (Past, Now, Upcoming)
+    - Date range
+    """
     
     def __init__(self, parent=None):
         """Initialize the activity filter proxy model."""
@@ -543,23 +552,25 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
         self._show_overdue = False
         self._show_submitted = False
         self._show_graded = False
-        self._show_current = False
-        self._show_current_upcoming = True
-        self._show_past = False
+        self._show_due = False
+        self._show_past_events = False
+        self._show_now_events = True
+        self._show_upcoming_events = True
         self._from_date = QDate.currentDate().addDays(-14)  # Default: 2 weeks ago
         self._to_date = QDate.currentDate().addDays(14)     # Default: 2 weeks ahead
     
     def set_filter_criteria(self, selected_courses, show_overdue, show_submitted,
-                          show_graded, show_current, show_current_upcoming, show_past,
-                          from_date, to_date):
+                          show_graded, show_due, show_past_events, show_now_events,
+                          show_upcoming_events, from_date, to_date):
         """Set all filter criteria at once."""
         self._selected_courses = set(selected_courses)
         self._show_overdue = show_overdue
         self._show_submitted = show_submitted
         self._show_graded = show_graded
-        self._show_current = show_current
-        self._show_current_upcoming = show_current_upcoming
-        self._show_past = show_past
+        self._show_due = show_due
+        self._show_past_events = show_past_events
+        self._show_now_events = show_now_events
+        self._show_upcoming_events = show_upcoming_events
         self._from_date = from_date
         self._to_date = to_date
         self.invalidateFilter()
@@ -581,7 +592,7 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
         
         # Case-insensitive check for event types
         event_type_lower = event_type.lower()
-        return event_type_lower in ["lecture", "office hours"]
+        return event_type_lower == "live event"
     
     def _parse_date(self, date_str):
         """Parse date string into QDate object."""
@@ -624,57 +635,98 @@ class ActivityFilterProxyModel(QSortFilterProxyModel):
     
     def _evaluate_deadlines_filter(self, index):
         """Evaluate if the item passes any of the deadline sub-filters."""
+        # Debug logging
+        event_type = index.data(ActivityModel.EventTypeRole)
+        status = index.data(ActivityModel.StatusRole)
+        title = index.data(ActivityModel.TitleRole)
+        print(f"\nEvaluating deadline filter for: {title}")
+        print(f"Event type: {event_type}")
+        print(f"Status: {status}")
+        print(f"Filter states - Overdue: {self._show_overdue}, Submitted: {self._show_submitted}, "
+              f"Graded: {self._show_graded}, Due: {self._show_due}")
+        
         if not self._is_deadline_item(index):
+            print("Not a deadline item, passing through")
             return True  # Not a deadline item, so passes this filter
             
         # If no deadline filters are selected, don't show any deadline items
         if not any([self._show_overdue, self._show_submitted, 
-                   self._show_graded, self._show_current]):
+                   self._show_graded, self._show_due]):
+            print("No deadline filters selected, hiding item")
             return False
             
-        status = index.data(ActivityModel.StatusRole)
-        status_lower = status.lower() if status else ""
         date_str = index.data(ActivityModel.DateRole)
         item_date = self._parse_date(date_str)
         if not item_date:
+            print("Could not parse date, hiding item")
             return False
             
         current_date = QDate.currentDate()
+        print(f"Item date: {item_date}, Current date: {current_date}")
         
-        # Check each sub-filter with case-insensitive comparison
-        if self._show_overdue and item_date < current_date and "due" in status_lower:
-            return True
-        if self._show_submitted and "submitted" in status_lower:
-            return True
-        if self._show_graded and "graded" in status_lower:
-            return True
-        if self._show_current and "due" in status_lower and item_date >= current_date:
+        # Check each sub-filter with case-insensitive matching
+        status_lower = status.lower()
+        print(f"Status (lowercase): {status_lower}")
+        
+        # For overdue items, check if the date is in the past
+        if self._show_overdue and "due" in status_lower and item_date < current_date:
+            print("Matches overdue filter")
             return True
             
+        # For submitted items
+        if self._show_submitted and "submitted" in status_lower:
+            print("Matches submitted filter")
+            return True
+            
+        # For graded items
+        if self._show_graded and "graded" in status_lower:
+            print("Matches graded filter")
+            return True
+            
+        # For due items, check if the date is in the future
+        if self._show_due and "due" in status_lower and item_date >= current_date:
+            print("Matches due filter")
+            return True
+            
+        print("No matching filters, hiding item")
         return False
     
     def _evaluate_events_filter(self, index):
         """Evaluate if the item passes any of the events sub-filters."""
+        # Debug logging
+        event_type = index.data(ActivityModel.EventTypeRole)
+        status = index.data(ActivityModel.StatusRole)
+        title = index.data(ActivityModel.TitleRole)
+        print(f"\nEvaluating event filter for: {title}")
+        print(f"Event type: {event_type}")
+        print(f"Status: {status}")
+        print(f"Filter states - Past: {self._show_past_events}, Now: {self._show_now_events}, "
+              f"Upcoming: {self._show_upcoming_events}")
+        
         if not self._is_event_item(index):
+            print("Not an event item, passing through")
             return True  # Not an event item, so passes this filter
             
         # If no event filters are selected, don't show any event items
-        if not any([self._show_current_upcoming, self._show_past]):
+        if not any([self._show_past_events, self._show_now_events, self._show_upcoming_events]):
+            print("No event filters selected, hiding item")
             return False
             
-        date_str = index.data(ActivityModel.DateRole)
-        item_date = self._parse_date(date_str)
-        if not item_date:
-            return False
-            
-        current_date = QDate.currentDate()
+        status_lower = status.lower()
+        print(f"Status (lowercase): {status_lower}")
         
         # Check each sub-filter
-        if self._show_current_upcoming and item_date >= current_date:
+        if self._show_past_events and "past" in status_lower:
+            print("Matches past filter")
             return True
-        if self._show_past and item_date < current_date:
+        if self._show_now_events and "now" in status_lower:
+            print("Matches now filter")
+            return True
+        if self._show_upcoming_events and "upcoming" in status_lower:
+            print("Matches upcoming filter")
             return True
             
+        print("No matching filters, hiding item")
         return False
     
     def filterAcceptsRow(self, source_row, source_parent):
@@ -815,7 +867,6 @@ class ActivityItemDelegate(QStyledItemDelegate):
         has_slack = index.data(ActivityModel.HasSlackRole)
         has_email = index.data(ActivityModel.HasEmailRole)
         event_type = index.data(ActivityModel.EventTypeRole)
-        duration_weight = index.data(ActivityModel.DurationWeightRole)
         start_time = index.data(ActivityModel.StartTimeRole)
         
         # Set up the painter
@@ -854,14 +905,13 @@ class ActivityItemDelegate(QStyledItemDelegate):
         # Draw course
         painter.setPen(QPen(QColor(TEXT_SECONDARY)))
         painter.setFont(QFont(option.font.family(), 9))
-        painter.drawText(info_rect, Qt.AlignLeft | Qt.AlignVCenter, 
-                    f"{course} • {duration_weight}")
+        painter.drawText(info_rect, Qt.AlignLeft | Qt.AlignVCenter, course)
         
         # Draw status
         painter.drawText(status_rect, Qt.AlignLeft | Qt.AlignVCenter, 
                     f"Status: {status} • {start_time}")
         
-        # Draw icons
+        # Draw icons only if has_slack or has_email is True (not None)
         icon_size = 20  # Reduced size
         icon_spacing = 4  # Space between icons
         icon_y = content_rect.top() + (content_rect.height() - icon_size) // 2
@@ -870,13 +920,13 @@ class ActivityItemDelegate(QStyledItemDelegate):
         icon_x = content_rect.right() - icon_size
         
         # Email icon
-        if has_email and self._email_icon:
+        if has_email is True and self._email_icon:
             email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
             self._email_icon.paint(painter, email_rect)
             icon_x -= (icon_size + icon_spacing)
         
         # Slack icon 
-        if has_slack and self._slack_icon:
+        if has_slack is True and self._slack_icon:
             slack_rect = QRect(icon_x, icon_y, icon_size, icon_size)
             self._slack_icon.paint(painter, slack_rect)
         
@@ -980,11 +1030,28 @@ class ActivityItemDelegate(QStyledItemDelegate):
         return super().editorEvent(event, model, option, index)
 
 class DateOnlyProxyModel(QSortFilterProxyModel):
+    """Proxy model that filters activities to show only those matching a specific date."""
+    
     def __init__(self, date_value, parent=None):
+        """Initialize the date-only proxy model.
+        
+        Args:
+            date_value: The date to filter activities by
+            parent: Parent widget
+        """
         super().__init__(parent)
         self.date_value = date_value
         
     def filterAcceptsRow(self, source_row, source_parent):
+        """Filter rows to show only those matching the specified date.
+        
+        Args:
+            source_row: Row index in the source model
+            source_parent: Parent index in the source model
+            
+        Returns:
+            bool: True if the row's date matches the filter date
+        """
         index = self.sourceModel().index(source_row, 0, source_parent)
         item_date = index.data(ActivityModel.DateRole)
         return item_date == self.date_value
@@ -1362,8 +1429,20 @@ class MainWindow(QMainWindow):
         self.filter_proxy_model = ActivityFilterProxyModel(self)
         self.filter_proxy_model.setSourceModel(self.activity_model)
         
-        # Load sample data
-        self.load_sample_data()
+        # Initialize and load data from the data agent
+        self.data_agent = DataAgentCourseraSim()
+        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "Coursera")
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+        data_file = os.path.join(data_dir, "screenscrape.csv")
+        self.data_agent.load_data(data_file)
+        self.activity_model.set_activities(self.data_agent.get_data())
+        
+        # Populate date sections
+        self.populate_activity_dates()
+        
+        # Update filters to show initial state
+        self.update_activity_filters()
         
         # Apply stylesheet
         self.apply_stylesheet()
@@ -1421,13 +1500,19 @@ class MainWindow(QMainWindow):
         self.submitted_btn.setToolTip("Include submitted assignments")
         self.graded_btn = FilterButton("Graded", is_selected=True)
         self.graded_btn.setToolTip("Include graded assignments")
-        self.current_btn = FilterButton("Current", is_selected=True)
-        self.current_btn.setToolTip("Include current (not overdue/submitted/graded) assignments")
+        self.due_btn = FilterButton("Due", is_selected=True)
+        self.due_btn.setToolTip("Include due assignments")
+        
+        # Connect deadline filter buttons to update method
+        self.overdue_btn.clicked.connect(self.update_activity_filters)
+        self.submitted_btn.clicked.connect(self.update_activity_filters)
+        self.graded_btn.clicked.connect(self.update_activity_filters)
+        self.due_btn.clicked.connect(self.update_activity_filters)
         
         deadlines_layout.addWidget(self.overdue_btn)
         deadlines_layout.addWidget(self.submitted_btn)
         deadlines_layout.addWidget(self.graded_btn)
-        deadlines_layout.addWidget(self.current_btn)
+        deadlines_layout.addWidget(self.due_btn)
         
         layout.addWidget(deadlines_container)
         
@@ -1447,13 +1532,21 @@ class MainWindow(QMainWindow):
         events_layout.setContentsMargins(0, 0, 0, 0)
         events_layout.setSpacing(4)
         
-        self.live_events_btn = FilterButton("Current & Upcoming", is_selected=True)
-        self.live_events_btn.setToolTip("Include current and upcoming events")
-        self.past_btn = FilterButton("Past", is_selected=True)
-        self.past_btn.setToolTip("Include past events")
+        self.past_events_btn = FilterButton("Past", is_selected=False)
+        self.past_events_btn.setToolTip("Include past events")
+        self.now_events_btn = FilterButton("Now", is_selected=True)
+        self.now_events_btn.setToolTip("Include current events")
+        self.upcoming_events_btn = FilterButton("Upcoming", is_selected=True)
+        self.upcoming_events_btn.setToolTip("Include upcoming events")
         
-        events_layout.addWidget(self.live_events_btn)
-        events_layout.addWidget(self.past_btn)
+        # Connect event filter buttons to update method
+        self.past_events_btn.clicked.connect(self.update_activity_filters)
+        self.now_events_btn.clicked.connect(self.update_activity_filters)
+        self.upcoming_events_btn.clicked.connect(self.update_activity_filters)
+        
+        events_layout.addWidget(self.past_events_btn)
+        events_layout.addWidget(self.now_events_btn)
+        events_layout.addWidget(self.upcoming_events_btn)
         
         layout.addWidget(events_container)
         
@@ -1580,9 +1673,25 @@ class MainWindow(QMainWindow):
             self.activities_layout.insertWidget(self.activities_layout.count() - 1, no_results_label)
             return
         
-        # Create a date section for each unique date
-        for date in sorted(list(dates)):
-            date_section = DateAccordionWidget(date, self.filter_proxy_model, self, self.icons_dir)
+        # Convert date strings to datetime objects for proper sorting
+        date_objects = []
+        for date_str in dates:
+            try:
+                # Parse date string (e.g., "Mar 16") to datetime
+                date_obj = datetime.strptime(date_str, "%b %d")
+                # Set year to current year
+                date_obj = date_obj.replace(year=datetime.now().year)
+                date_objects.append((date_str, date_obj))
+            except ValueError:
+                print(f"Warning: Could not parse date string: {date_str}")
+                continue
+        
+        # Sort by datetime objects
+        date_objects.sort(key=lambda x: x[1])
+        
+        # Create a date section for each unique date in chronological order
+        for date_str, _ in date_objects:
+            date_section = DateAccordionWidget(date_str, self.filter_proxy_model, self, self.icons_dir)
             self.activities_layout.insertWidget(self.activities_layout.count() - 1, date_section)
             date_section.update_content_height()
     
@@ -1607,9 +1716,10 @@ class MainWindow(QMainWindow):
         show_overdue = self.overdue_btn.isChecked()
         show_submitted = self.submitted_btn.isChecked()
         show_graded = self.graded_btn.isChecked()
-        show_current = self.current_btn.isChecked()
-        show_current_upcoming = self.live_events_btn.isChecked()
-        show_past = self.past_btn.isChecked()
+        show_due = self.due_btn.isChecked()
+        show_past_events = self.past_events_btn.isChecked()
+        show_now_events = self.now_events_btn.isChecked()
+        show_upcoming_events = self.upcoming_events_btn.isChecked()
         
         # Get date range
         from_date = self.from_date.date()
@@ -1621,9 +1731,10 @@ class MainWindow(QMainWindow):
             show_overdue=show_overdue,
             show_submitted=show_submitted,
             show_graded=show_graded,
-            show_current=show_current,
-            show_current_upcoming=show_current_upcoming,
-            show_past=show_past,
+            show_due=show_due,
+            show_past_events=show_past_events,
+            show_now_events=show_now_events,
+            show_upcoming_events=show_upcoming_events,
             from_date=from_date,
             to_date=to_date
         )
@@ -1673,83 +1784,9 @@ class MainWindow(QMainWindow):
         )
         self.chat.add_message(slack_response, is_user=False)
     
-    def load_sample_data(self):
-        """Load sample activity data."""
-        # Add sample activities
-        activities = [
-            {
-                "Date": "Mar 13",
-                "Event Type": "Office Hours",
-                "Title": "TA Office Hours",
-                "Course": "Database Management Systems",
-                "Status": "Scheduled",
-                "Duration/Weight": "1 hour",
-                "Start Time": "2:00 PM",
-                "HasSlack": True,
-                "HasEmail": True
-            },
-            {
-                "Date": "Mar 13",
-                "Event Type": "Assignment",
-                "Title": "Module 07 SQL Lab - ProblemSet02",
-                "Course": "Database Management Systems",
-                "Status": "Submitted",
-                "Duration/Weight": "10%",
-                "Start Time": "11:59 PM",
-                "HasSlack": True,
-                "HasEmail": True
-            },
-            {
-                "Date": "Mar 13",
-                "Event Type": "Assignment",
-                "Title": "Module 7 Quiz: Introduction to SQL",
-                "Course": "Database Management Systems",
-                "Status": "Graded (90%)",
-                "Duration/Weight": "5%",
-                "Start Time": "11:59 PM",
-                "HasSlack": True,
-                "HasEmail": True
-            },
-            {
-                "Date": "Mar 13",
-                "Event Type": "Assignment",
-                "Title": "Final Project Checkpoint #2: Project Execution",
-                "Course": "Human-Centered Artificial Intelligence",
-                "Status": "Due",
-                "Duration/Weight": "15%",
-                "Start Time": "11:59 PM",
-                "HasSlack": True,
-                "HasEmail": True
-            },
-            {
-                "Date": "Mar 14",
-                "Event Type": "Lecture",
-                "Title": "Advanced SQL Concepts",
-                "Course": "Database Management Systems",
-                "Status": "Scheduled",
-                "Duration/Weight": "1.5 hours",
-                "Start Time": "10:30 AM",
-                "HasSlack": False,
-                "HasEmail": True
-            },
-            {
-                "Date": "Mar 16",
-                "Event Type": "Assignment",
-                "Title": "Final Project Presentation",
-                "Course": "Human-Centered Artificial Intelligence",
-                "Status": "Upcoming",
-                "Duration/Weight": "25%",
-                "Start Time": "3:00 PM",
-                "HasSlack": True,
-                "HasEmail": True
-            }
-        ]
-        
-        # Set activities in the model
-        self.activity_model.set_activities(activities)
-        
-        # Populate date sections
-        self.populate_activity_dates()
+    def handle_slack_response(self, slack_response):
+        """Handle the response from the Slack agent."""
+        self.chat.add_message(slack_response, is_user=False)
     
     def apply_stylesheet(self):
         """Apply the appropriate stylesheet to the application."""
