@@ -153,8 +153,9 @@ class DateAccordionWidget(QWidget):
                 email_rect = QRect(icon_x, icon_y, icon_size, icon_size)
                 
                 # Slack icon rect (to the left of email)
-                slack_rect = QRect(
-                    icon_x - (icon_size + icon_spacing), icon_y, icon_size, icon_size)
+                # pylint: disable=line-too-long
+                slack_rect = QRect(icon_x - (icon_size + icon_spacing), icon_y, icon_size, icon_size)
+                # pylint: enable=line-too-long
                 
                 # Get mouse position relative to the item
                 mouse_pos = event.pos() - rect.topLeft()
