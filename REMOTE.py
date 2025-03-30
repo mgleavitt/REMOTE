@@ -11,19 +11,14 @@ import csv
 import asyncio
 import logging
 import traceback
-from test_pipeline import TestCoreComponent
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Import PySide6 classes
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QLineEdit, QScrollArea, QFrame, QSplitter,
     QTextEdit, QCalendarWidget, QDialog, QListView, QAbstractItemView,
-    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, QStyleOptionViewItem, QStyle, QSizePolicy, QMessageBox,
-    QStatusBar
+    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, 
+    QStyleOptionViewItem, QStyle, QSizePolicy, QMessageBox, QStatusBar
 )
 from PySide6.QtCore import (
     Qt, QDate, Signal, QAbstractListModel, QModelIndex, QRect,
@@ -38,6 +33,8 @@ from PySide6.QtGui import (
 # Import data agent
 from agents.data_agent_coursera_sim import DataAgentCourseraSim
 
+from test_pipeline import TestCoreComponent
+
 # Import models
 from models import ActivityModel, DateGroupProxyModel, ActivityFilterProxyModel, DateOnlyProxyModel
 
@@ -46,6 +43,8 @@ from delegates import ActivityItemDelegate
 
 # Import LLM components
 from llm_pipeline import LLMPipeline
+from llm_providers import AnthropicProvider
+from llm_core_components import CoreLLMComponent
 
 # Constants and styling
 from styles import (
@@ -55,14 +54,6 @@ from styles import (
     HOVER_BG, SELECTED_BG, BORDER_COLOR, TEXT_PRIMARY, TEXT_SECONDARY,
     get_stylesheet, get_material_palette
 )
-
-# Try to import Qt-Material, with fallback to custom stylesheets
-try:
-    from qt_material import apply_stylesheet
-    HAS_QT_MATERIAL = True
-except ImportError:
-    HAS_QT_MATERIAL = False
-    print("Qt-Material not found, falling back to custom stylesheets")
 
 # Import chat components
 from chat_components import ChatMessage, ChatWidget
@@ -82,9 +73,17 @@ from sidebar import Sidebar
 # Import content area
 from content_area import ContentArea
 
-# UI Components
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-
+# Try to import Qt-Material, with fallback to custom stylesheets
+try:
+    from qt_material import apply_stylesheet
+    HAS_QT_MATERIAL = True
+except ImportError:
+    HAS_QT_MATERIAL = False
+    print("Qt-Material not found, falling back to custom stylesheets")
 
 class MainWindow(QMainWindow):
     """Main application window for REMOTE"""
@@ -233,7 +232,7 @@ class MainWindow(QMainWindow):
         # Try to set up LLM integration
         try:
             self.setup_llm_integration()
-        except Exception as e:
+        except (ValueError, RuntimeError, ImportError, ConnectionError) as e:
             logger.error("Failed to set up LLM integration: %s", str(e))
             # Add a message to the chat widget explaining the situation
             self.chat_widget.add_message(
@@ -338,7 +337,6 @@ class MainWindow(QMainWindow):
             
             try:
                 # Create the Anthropic provider
-                from llm_providers import AnthropicProvider
                 provider = AnthropicProvider(api_key=api_key, model="claude-3-7-sonnet-20250219")
                 provider.enable_thinking(budget_tokens=16000)
                 logger.info("Created AnthropicProvider")
@@ -353,7 +351,6 @@ class MainWindow(QMainWindow):
                 )
                 
                 # Create core component
-                from llm_core_components import CoreLLMComponent
                 core_component = CoreLLMComponent(
                     provider,
                     system_prompt="You are an educational assistant for a university student. Provide helpful, accurate, and educational responses. Be concise but informative."
@@ -381,7 +378,7 @@ class MainWindow(QMainWindow):
                 logger.info("LLM integration setup complete")
                 self.statusBar.showMessage("LLM integration active", 3000)
                 
-            except Exception as e:
+            except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
                 logger.error("Failed to set up real LLM integration: %s", str(e))
                 logger.error(traceback.format_exc())
                 self.statusBar.showMessage(f"Error: {str(e)}", 10000)
@@ -390,7 +387,7 @@ class MainWindow(QMainWindow):
                 logger.info("Falling back to test mode due to exception")
                 self.setup_test_llm_integration()
                 
-        except Exception as e:
+        except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
             logger.error("Error in LLM integration setup: %s", str(e))
             logger.error(traceback.format_exc())
             self.statusBar.showMessage(f"Error setting up LLM integration: {str(e)}", 10000)

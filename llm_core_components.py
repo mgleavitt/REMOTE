@@ -6,7 +6,6 @@ Core LLM component for processing user queries (Synchronous version).
 import logging
 import traceback
 import concurrent.futures
-from typing import Any
 
 from llm_components import LLMComponent, Message, MessageType
 from llm_providers import LLMBaseProvider
@@ -58,19 +57,6 @@ class CoreLLMComponent(LLMComponent):
             self.send_status("Processing message...")
             logger.info("Starting to process message...")
             
-            # For testing - add a direct response to check if the pipeline works
-            # Uncomment this section if you want to bypass the LLM call for testing
-            """
-            test_response = Message(
-                content="This is a test response to verify the UI pipeline works.",
-                thinking=None,
-                msg_type=MessageType.CORE_RESPONSE
-            )
-            self.send_output(test_response)
-            logger.info("Sent test response to UI")
-            return  # Skip the actual LLM call
-            """
-            
             # Run the API call in a background thread but wait for it to complete
             def call_llm():
                 try:
@@ -101,7 +87,10 @@ class CoreLLMComponent(LLMComponent):
                 # Check if response includes thinking
                 if isinstance(response, tuple) and len(response) == 2:
                     content, thinking = response
-                    logger.info("Response includes thinking (%d chars)", len(thinking) if thinking else 0)
+                    logger.info(
+                        "Response includes thinking (%d chars)",
+                        len(thinking) if thinking else 0
+                    )
                 else:
                     content = response
                     thinking = None
@@ -126,7 +115,7 @@ class CoreLLMComponent(LLMComponent):
                 )
                 self.send_output(error_message)
                 
-        except Exception as e:
+        except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
             logger.error("Error in CoreLLM: %s", str(e))
             logger.error(traceback.format_exc())
             error_message = Message(
@@ -218,7 +207,7 @@ class InputClassifierComponent(LLMComponent):
                 )
                 self.send_output(error_message)
                 
-        except Exception as e:
+        except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
             logger.error("Error in InputClassifier: %s", str(e))
             error_message = Message(
                 content=f"Error validating input: {str(e)}",
@@ -312,7 +301,7 @@ class OutputClassifierComponent(LLMComponent):
                 )
                 self.send_output(error_message)
                 
-        except Exception as e:
+        except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
             logger.error("Error in OutputClassifier: %s", str(e))
             error_message = Message(
                 content=f"Error validating output: {str(e)}",

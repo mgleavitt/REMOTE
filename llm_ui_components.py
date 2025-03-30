@@ -6,7 +6,6 @@ UI Component for LLM integration with existing chat widget (Synchronous version)
 import logging
 from typing import Optional, Callable
 from PySide6.QtCore import QObject, Signal, Slot, QTimer
-import threading
 
 from llm_components import LLMComponent, Message, MessageType
 

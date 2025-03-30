@@ -2,6 +2,8 @@
 Test script to verify that the Anthropic API is working correctly.
 Run this separately from the main application to isolate API issues.
 """
+# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name, unnecessary-pass
+
 import os
 import logging
 
@@ -68,7 +70,7 @@ def test_anthropic_api():
             print(f"Raw response: {response}")
             return False
             
-    except Exception as e:
+    except (ValueError, RuntimeError, ImportError, ConnectionError) as e:
         logger.error("Error testing Anthropic API: %s", str(e))
         print(f"\nERROR: Could not connect to Anthropic API: {str(e)}")
         return False
@@ -78,7 +80,10 @@ if __name__ == "__main__":
     success = test_anthropic_api()  # No need for asyncio.run
     if success:
         print("\nThe Anthropic API is working correctly.")
-        print("If your app is still having issues, the problem is in the integration code, not the API.")
+        print(
+            "If your app is still having issues, "
+            "the problem is in the integration code, not the API."
+        )
     else:
         print("\nThe Anthropic API test FAILED.")
         print("Please fix the API issues before continuing with the app.")

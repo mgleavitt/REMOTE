@@ -2,7 +2,7 @@
 Base components for LLM integration in REMOTE application.
 Defines the messaging system and component interfaces with synchronous approach.
 """
-# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
+# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name, unnecessary-pass
 
 import logging
 from abc import ABC, abstractmethod
@@ -93,7 +93,7 @@ class LLMComponent(ABC):
                 logger.info("Sending message from %s to %s", self.name, component.name)
                 # Directly call process_input - no coroutines to handle
                 component.process_input(message)
-            except Exception as e:
+            except (ValueError, RuntimeError, AttributeError) as e:
                 logger.error("Error sending message to %s: %s", component.name, str(e))
                 error_message = Message(
                     content=f"Error processing message: {str(e)}",
@@ -102,7 +102,7 @@ class LLMComponent(ABC):
                 # Try to send an error message, but don't cause a cascade of errors
                 try:
                     component.process_input(error_message)
-                except Exception:
+                except (ValueError, RuntimeError, AttributeError):
                     logger.error("Failed to send error message to %s", component.name)
     
     @abstractmethod

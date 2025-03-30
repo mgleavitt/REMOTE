@@ -62,7 +62,7 @@ class AnthropicProvider:
         self.api_key = api_key
         self.model = model
         self._thinking_enabled = False
-        self._thinking_budget = 4000  # Default to a smaller budget that works with default max_tokens
+        self._thinking_budget = 4000  #Budget that works with default max_tokens
         self._client = None
         self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         
@@ -78,14 +78,16 @@ class AnthropicProvider:
     def client(self):
         """Lazy-load the Anthropic client to avoid import overhead if not used."""
         if self._client is None:
-            try:
-                import anthropic
-                self._client = anthropic.Anthropic(api_key=self.api_key)
-                logger.info("Initialized Anthropic client with model %s", self.model)
-            except ImportError:
-                error_msg = "The anthropic package is required. Install it with: pip install anthropic"
+            if not HAS_ANTHROPIC:
+                error_msg = (
+                    "The anthropic package is required. "
+                    "Install it with: pip install anthropic"
+                )
                 logger.error(error_msg)
                 raise ImportError(error_msg)
+            try:
+                self._client = anthropic.Anthropic(api_key=self.api_key)
+                logger.info("Initialized Anthropic client with model %s", self.model)
             except Exception as e:
                 logger.error("Failed to initialize Anthropic client: %s", str(e))
                 logger.error(traceback.format_exc())
@@ -118,7 +120,8 @@ class AnthropicProvider:
             The API response
         """
         try:
-            logger.info("Making API call to Anthropic with model: %s", api_params.get('model', self.model))
+            model = api_params.get('model', self.model)
+            logger.info("Making API call to Anthropic with model: %s", model)
             start_time = time.time()
             response = self.client.messages.create(**api_params)
             elapsed_time = time.time() - start_time
@@ -181,7 +184,10 @@ class AnthropicProvider:
                 # Ensure max_tokens is greater than thinking budget
                 if max_tokens <= self._thinking_budget:
                     max_tokens = self._thinking_budget + 1024  # Add buffer for response
-                    logger.info("Increased max_tokens to %d to accommodate thinking budget", max_tokens)
+                    logger.info(
+                        "Increased max_tokens to %d to accommodate thinking budget",
+                        max_tokens
+                    )
                 
                 api_params["thinking"] = {
                     "type": "enabled",
@@ -206,9 +212,9 @@ class AnthropicProvider:
                 logger.info("Waiting for API response (with timeout)")
                 message = future.result(timeout=60)  # 60-second timeout
                 logger.info("Received response from Anthropic API")
-            except concurrent.futures.TimeoutError:
+            except concurrent.futures.TimeoutError as exc:
                 logger.error("API call timed out after 60 seconds")
-                raise TimeoutError("Anthropic API call timed out after 60 seconds")
+                raise TimeoutError("Anthropic API call timed out after 60 seconds") from exc
             
             # Extract response and thinking
             try:
@@ -222,7 +228,8 @@ class AnthropicProvider:
                         if content_block.type == 'text' and hasattr(content_block, 'text'):
                             response_text = content_block.text
                             logger.info("Extracted text response: %s", response_text[:50])
-                        elif content_block.type == 'thinking' and hasattr(content_block, 'thinking'):
+                        elif (content_block.type == 'thinking' and 
+                              hasattr(content_block, 'thinking')):
                             thinking_text = content_block.thinking
                             logger.info("Extracted thinking (%d chars)", len(thinking_text))
                 
@@ -310,9 +317,9 @@ class OpenAIProvider(LLMBaseProvider):
             try:
                 # Wait for result with a timeout
                 response = future.result(timeout=60)
-            except concurrent.futures.TimeoutError:
+            except concurrent.futures.TimeoutError as exc:
                 logger.error("OpenAI API call timed out after 60 seconds")
-                raise TimeoutError("OpenAI API call timed out after 60 seconds")
+                raise TimeoutError("OpenAI API call timed out after 60 seconds") from exc
             
             return response.choices[0].message.content
             
