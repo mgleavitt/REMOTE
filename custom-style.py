@@ -295,6 +295,36 @@ def get_stylesheet():
         QPushButton:pressed {{
             background-color: {SELECTED_BG};
         }}
+        
+        .thinking-button {{
+            background-color: transparent;
+            border: none;
+            color: {PRIMARY};
+            padding: 4px 8px;
+            text-align: left;
+            font-size: 12px;
+            margin-top: 4px;
+        }}
+        
+        .thinking-button:hover {{
+            text-decoration: underline;
+            background-color: rgba(98, 0, 238, 0.05);
+        }}
+        
+        .thinking-panel {{
+            background-color: #F8F4FF;
+            border-left: 3px solid {PRIMARY};
+            border-radius: 4px;
+            margin-left: 28px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }}
+        
+        .thinking-panel QLabel {{
+            color: {TEXT_SECONDARY};
+            font-style: italic;
+            font-size: 12px;
+        }}
     """
 
 # Get a material palette for qt-material library

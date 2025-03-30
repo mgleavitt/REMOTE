@@ -14,19 +14,33 @@ from PySide6.QtCore import Qt, Signal
 logger = logging.getLogger(__name__)
 
 class ChatMessage(QFrame):
-    """Widget for displaying a single chat message"""
+    """Widget for displaying a single chat message with optional thinking content"""
     
-    def __init__(self, text, is_user=False, parent=None):
-        """Initialize the chat message widget."""
+    def __init__(self, text, is_user=False, thinking=None, parent=None):
+        """Initialize the chat message widget.
+        
+        Args:
+            text: The message text
+            is_user: Whether the message is from the user
+            thinking: Optional thinking content for assistant messages
+            parent: Parent widget
+        """
         super().__init__(parent)
         self.is_user = is_user
         self.text = text
+        self.thinking = thinking
+        self.thinking_visible = False
         
         # Use consistent class for visual styling, but change alignment in layout
         self.setProperty("class", "chat-message")
         
-        self.layout = QHBoxLayout(self)
+        self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(8, 6, 8, 6)
+        self.layout.setSpacing(4)  # Reduced spacing between elements
+        
+        # Message content layout
+        self.content_layout = QHBoxLayout()
+        self.content_layout.setContentsMargins(0, 0, 0, 0)
         
         # Avatar placeholder with consistent size
         self.avatar = QLabel()
@@ -45,8 +59,60 @@ class ChatMessage(QFrame):
         self.message_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         
         # Always use the same layout order regardless of user/assistant
-        self.layout.addWidget(self.avatar)
-        self.layout.addWidget(self.message_label, 1)  # Give text expanding priority
+        self.content_layout.addWidget(self.avatar)
+        self.content_layout.addWidget(self.message_label, 1)  # Give text expanding priority
+        
+        self.layout.addLayout(self.content_layout)
+        
+        # Add thinking button and panel only for assistant messages with thinking content
+        if not is_user and thinking:
+            # Create button container for better alignment
+            self.button_container = QWidget()
+            self.button_layout = QHBoxLayout(self.button_container)
+            self.button_layout.setContentsMargins(0, 0, 0, 0)
+            
+            # Add spacing to align with message text
+            self.button_layout.addSpacing(32)  # Match avatar width + margin
+            
+            # Create thinking toggle button
+            self.thinking_button = QPushButton("💡 Show thinking")
+            self.thinking_button.setProperty("class", "thinking-button")
+            self.thinking_button.setCursor(Qt.PointingHandCursor)
+            self.thinking_button.clicked.connect(self.toggle_thinking)
+            self.thinking_button.setToolTip("Show or hide the assistant's thinking process")
+            
+            self.button_layout.addWidget(self.thinking_button)
+            self.button_layout.addStretch(1)  # Push button to the left
+            
+            self.layout.addWidget(self.button_container)
+            
+            # Create thinking content panel (initially hidden)
+            self.thinking_panel = QFrame()
+            self.thinking_panel.setProperty("class", "thinking-panel")
+            self.thinking_panel_layout = QVBoxLayout(self.thinking_panel)
+            self.thinking_panel_layout.setContentsMargins(32, 8, 8, 8)  # Match message indentation
+            
+            # Add thinking content label
+            self.thinking_label = QLabel(thinking)
+            self.thinking_label.setWordWrap(True)
+            self.thinking_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            self.thinking_label.setStyleSheet("color: #555555; font-style: italic;")
+            
+            self.thinking_panel_layout.addWidget(self.thinking_label)
+            self.thinking_panel.setVisible(False)  # Initially hidden
+            
+            self.layout.addWidget(self.thinking_panel)
+    
+    def toggle_thinking(self):
+        """Toggle the visibility of the thinking panel."""
+        self.thinking_visible = not self.thinking_visible
+        
+        if self.thinking_visible:
+            self.thinking_button.setText("💡 Hide thinking")
+            self.thinking_panel.setVisible(True)
+        else:
+            self.thinking_button.setText("💡 Show thinking")
+            self.thinking_panel.setVisible(False)
 
 
 class ChatWidget(QWidget):
@@ -105,9 +171,17 @@ class ChatWidget(QWidget):
         self.layout.addLayout(self.input_layout)
         logger.info("ChatWidget initialization complete")
     
-    def add_message(self, text, is_user=False):
-        """Add a message to the chat."""
+    def add_message(self, text, is_user=False, thinking=None):
+        """Add a message to the chat.
+        
+        Args:
+            text: The message text
+            is_user: Whether this is a user message
+            thinking: Optional thinking content for assistant messages
+        """
         logger.info("Adding message to chat - User: %s, Text: %s", is_user, text[:50])
+        if thinking:
+            logger.info("Message includes thinking content (%d chars)", len(thinking))
         
         # Remove the stretch if it exists
         if self.messages_layout.count() > 0:
@@ -116,7 +190,7 @@ class ChatWidget(QWidget):
                 self.messages_layout.removeItem(stretch_item)
         
         # Add the new message
-        message = ChatMessage(text, is_user, self)
+        message = ChatMessage(text, is_user, thinking, self)
         self.messages_layout.addWidget(message)
         
         # Add stretch back

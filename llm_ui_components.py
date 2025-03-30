@@ -54,7 +54,14 @@ class ChatUIComponent(LLMComponent):
         self.send_output(message)
     
     def process_input(self, message: Message) -> None:
-        """Process an input message by displaying it in the chat."""
+        """Process an input message by displaying it in the chat.
+        
+        This method handles different message types and displays them appropriately
+        in the chat widget, including thinking content when available.
+        
+        Args:
+            message: The message to process
+        """
         if message.type == MessageType.STATUS_UPDATE:
             if self._status_callback:
                 self._status_callback(message.content)
@@ -65,10 +72,18 @@ class ChatUIComponent(LLMComponent):
             
         elif message.type in [MessageType.CORE_RESPONSE, MessageType.VALIDATED_OUTPUT]:
             logger.info("LLM response: %s", message.content[:50])
-            self.chat_widget.add_message(message.content, is_user=False)
             
-            if message.thinking:
-                logger.debug("Thinking: %s", message.thinking[:100])
+            # Check if the message has thinking content
+            thinking = message.thinking
+            if thinking:
+                logger.info("Response includes thinking (%d chars)", len(thinking))
+            
+            # Add message to chat widget with thinking content (if available)
+            self.chat_widget.add_message(
+                message.content, 
+                is_user=False,
+                thinking=thinking
+            )
 
 
 class StatusManager(QObject):
