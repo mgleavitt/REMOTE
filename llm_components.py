@@ -49,25 +49,18 @@ class LLMComponent(ABC):
     """Base class for all LLM pipeline components."""
     
     def __init__(self, name: str):
-        """Initialize the component.
-        
-        Args:
-            name: Component name for logging and debugging
-        """
+        """Initialize the component."""
         self.name = name
         self._output_connections: List['LLMComponent'] = []
         self._status_callback: Optional[Callable[[str], None]] = None
+        
+        # Get the event loop from the main thread
         self._loop = asyncio.get_event_loop()
     
     def connect_output(self, component: 'LLMComponent') -> None:
-        """Connect this component's output to another component's input.
-        
-        Args:
-            component: The component to receive this component's output
-        """
+        """Connect this component's output to another component's input."""
         if component not in self._output_connections:
             self._output_connections.append(component)
-            logger.info("Connected %s output to %s", self.name, component.name)
     
     def disconnect_output(self, component: 'LLMComponent') -> None:
         """Disconnect this component's output from another component.
@@ -96,19 +89,52 @@ class LLMComponent(ABC):
         logger.info("[%s] %s", self.name, status_msg)
         if self._status_callback:
             self._status_callback(f"[{self.name}] {status_msg}")
-    
-    def send_output(self, message: Message) -> None:
-        """Send output message to all connected components.
         
-        Args:
-            message: The message to send
-        """
+    def send_output(self, message: Message) -> None:
+        """Send output message to all connected components."""
         for component in self._output_connections:
-            # Use asyncio to handle the async processing_input method
-            if asyncio.iscoroutinefunction(component.process_input):
-                self._loop.create_task(component.process_input(message))
-            else:
-                component.process_input(message)
+            # Get the result from process_input
+            result = component.process_input(message)
+            
+            # Check if the result is a coroutine that needs to be awaited
+            if asyncio.iscoroutine(result):
+                logger.info("Running coroutine from %s.process_input in event loop", component.name)
+                try:
+                    # Use run_coroutine_threadsafe and wait for it to complete
+                    # This ensures the coroutine is actually executed
+                    future = asyncio.run_coroutine_threadsafe(result, self._loop)
+                    
+                    # The key part: actually get the result which forces the future to complete
+                    # Use a timeout to prevent hanging indefinitely
+                    future.result(timeout=30)  # 30 second timeout
+                    
+                    logger.info("Coroutine completed successfully")
+                except asyncio.TimeoutError:
+                    logger.error("Coroutine timed out after 30 seconds")
+                    error_message = Message(
+                        content="Request timed out. Please try again later.",
+                        msg_type=MessageType.ERROR
+                    )
+                    self.send_output(error_message)
+                except Exception as e:
+                    logger.error("Error executing coroutine: %s", str(e))
+                    error_message = Message(
+                        content=f"Error processing message: {str(e)}",
+                        msg_type=MessageType.ERROR
+                    )
+                    self.send_output(error_message)
+
+    def _handle_task_result(self, future):
+        """Handle the result of an async task."""
+        try:
+            future.result()
+        except Exception as e:
+            logger.error("Task error: %s", str(e))
+            error_message = Message(
+                content=f"Error processing message: {str(e)}",
+                msg_type=MessageType.ERROR
+            )
+            self.send_output(error_message)
     
     @abstractmethod
     def process_input(self, message: Message) -> Union[None, Coroutine[Any, Any, None]]:

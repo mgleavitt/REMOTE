@@ -4,13 +4,17 @@ UI Component for LLM integration with existing chat widget.
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
 import logging
-from typing import Optional, Callable
+from typing import Optional, Callable, Union, Coroutine, Any
 from PySide6.QtCore import QObject, Signal, Slot, QTimer
+import asyncio
 
 from llm_components import LLMComponent, Message, MessageType
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 
@@ -29,68 +33,50 @@ class ChatUIComponent(LLMComponent):
         super().__init__(name)
         self.chat_widget = chat_widget
         
-        # Connect to existing UI signals
-        self.chat_widget.send_button.clicked.connect(self.send_user_message)
-        self.chat_widget.chat_input.returnPressed.connect(self.send_user_message)
+        # Connect to the chat widget's message_sent signal
+        self.chat_widget.message_sent.connect(self.handle_message_sent)
         
         # Set status callback if provided
         if status_callback:
             self.set_status_callback(status_callback)
+        
+        # Use the existing event loop
+        try:
+            self._loop = asyncio.get_event_loop()
+        except RuntimeError:
+            self._loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self._loop)
+        
+        logger.info("%s initialized with chat widget", self.name)
     
-    @Slot()
-    def send_user_message(self) -> None:
-        """Send a user message from the chat input field."""
-        text = self.chat_widget.chat_input.text().strip()
-        if not text:
-            return
+    @Slot(str)
+    def handle_message_sent(self, text: str) -> None:
+        """Handle a message sent from the chat widget."""
+        logger.info("User message: %s", text[:50])
         
-        # Add message to chat display
-        self.chat_widget.add_message(text, is_user=True)
-        self.chat_widget.chat_input.clear()
-        
-        # Create and send message through the pipeline
         message = Message(
             content=text,
             msg_type=MessageType.USER_INPUT
         )
         
-        # Log the message
-        logger.info("User message sent: %s...", text[:30])
-        
-        # Send the message to the next component in the pipeline
         self.send_output(message)
     
     def process_input(self, message: Message) -> None:
-        """Process an input message by displaying it in the chat.
-        
-        Args:
-            message: The message to process
-        """
+        """Process an input message by displaying it in the chat."""
         if message.type == MessageType.STATUS_UPDATE:
-            # Log status updates but don't display them in the chat yet
-            # In a future version, you could add a status bar or indicator
-            logger.info("Status update: %s", message.content)
             if self._status_callback:
                 self._status_callback(message.content)
                 
         elif message.type == MessageType.ERROR:
-            # Display error messages in the chat
-            logger.warning("Error message: %s", message.content)
+            logger.error("Error: %s", message.content)
             self.chat_widget.add_message(f"Error: {message.content}", is_user=False)
             
         elif message.type in [MessageType.CORE_RESPONSE, MessageType.VALIDATED_OUTPUT]:
-            # Display response in the chat
+            logger.info("LLM response: %s", message.content[:50])
             self.chat_widget.add_message(message.content, is_user=False)
             
-            # If there's thinking content, log it for now
-            # Future: Add UI element to display thinking
             if message.thinking:
-                logger.info("Thinking: %s...", message.thinking[:100])
-                # You could store this for later display or visualization
-        
-        else:
-            # Default handling for unrecognized message types
-            logger.warning("Unhandled message type: %s", message.type)
+                logger.debug("Thinking: %s", message.thinking[:100])
 
 
 class StatusManager(QObject):

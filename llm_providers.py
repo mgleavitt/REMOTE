@@ -1,10 +1,11 @@
 """
 LLM provider implementations for REMOTE application.
 """
-# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
+# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name, unnecessary-pass
 
 from abc import ABC, abstractmethod
 import logging
+import traceback
 from typing import Optional, Union, Tuple
 
 # Configure logging
@@ -14,8 +15,10 @@ logger = logging.getLogger(__name__)
 try:
     import anthropic
     HAS_ANTHROPIC = True
+    logger.info("Anthropic library imported successfully")
 except ImportError:
     HAS_ANTHROPIC = False
+    logger.error("Failed to import anthropic library - make sure it's installed")
 
 try:
     import openai
@@ -42,41 +45,41 @@ class LLMBaseProvider(ABC):
         """
         pass
 
-
-class AnthropicProvider(LLMBaseProvider):
-    """Anthropic Claude API provider implementation with thinking support."""
+class AnthropicProvider:
+    """Anthropic Claude API provider implementation."""
     
-    def __init__(self, api_key: str, model: str = "claude-3-sonnet-20240229"):
-        """Initialize the Anthropic provider.
-        
-        Args:
-            api_key: Anthropic API key
-            model: Model to use (default: claude-3-sonnet-20240229)
-        """
+    def __init__(self, api_key: str, model: str = "claude-3-opus-20240229"):
+        """Initialize the Anthropic provider."""
         self.api_key = api_key
         self.model = model
         self._thinking_enabled = False
         self._thinking_length = 0
         self._client = None
+        
+        logger.info("AnthropicProvider initialized with model: %s", model)
+        logger.info("API key length: %d characters", len(api_key))
     
     @property
     def client(self):
-        """Lazy-load the Anthropic client to avoid import overhead if not used."""
+        """Lazy-load the Anthropic client."""
         if self._client is None:
             if not HAS_ANTHROPIC:
-                raise ImportError(
-                    "The anthropic package is required. Install it with: pip install anthropic"
-                )
-            self._client = anthropic.Anthropic(api_key=self.api_key)
-            logger.info("Initialized Anthropic client with model %s", self.model)
+                error_msg = "The anthropic package is required. Install it with: pip install anthropic"
+                logger.error(error_msg)
+                raise ImportError(error_msg)
+                
+            try:
+                self._client = anthropic.Anthropic(api_key=self.api_key)
+                logger.info("Initialized Anthropic client with model %s", self.model)
+            except Exception as e:
+                logger.error("Failed to initialize Anthropic client: %s", str(e))
+                logger.error(traceback.format_exc())
+                raise RuntimeError(f"Failed to initialize Anthropic client: {str(e)}") from e
+                
         return self._client
     
     def enable_thinking(self, max_thinking_length: int = 4000) -> None:
-        """Enable capturing of thinking tags.
-        
-        Args:
-            max_thinking_length: Maximum number of characters for thinking
-        """
+        """Enable capturing of thinking tags."""
         self._thinking_enabled = True
         self._thinking_length = max_thinking_length
         logger.info("Enabled thinking tags with max length %s", max_thinking_length)
@@ -87,63 +90,57 @@ class AnthropicProvider(LLMBaseProvider):
         self._thinking_length = 0
         logger.info("Disabled thinking tags")
     
-    async def generate_response(self, 
-                               prompt: str, 
-                               **kwargs) -> Union[str, Tuple[str, Optional[str]]]:
-        """Generate a response using Anthropic Claude with optional thinking.
+    async def generate_response(self, prompt: str, **kwargs) -> str:
+        """Generate a response using Anthropic Claude.
         
-        Args:
-            prompt: The input prompt
-            **kwargs: Additional arguments for Claude
-            
-        Returns:
-            Either response text, or tuple of (response, thinking)
+        This is marked as async for interface compatibility but uses
+        synchronous API calls under the hood.
         """
         try:
-            # Prepare the messages format
-            messages = kwargs.get('messages', [{"role": "user", "content": prompt}])
+            logger.info("Starting generate_response with prompt: %s", prompt[:50])
             
-            # If no messages were provided but a system message was,
-            # use the system message with the prompt
+            # Prepare messages
             system = kwargs.get('system', "")
-            if 'messages' not in kwargs and system:
-                messages = [{"role": "user", "content": prompt}]
+            messages = [{"role": "user", "content": prompt}]
             
-            # Prepare API parameters
-            api_params = {
-                "model": kwargs.get('model', self.model),
-                "max_tokens": kwargs.get('max_tokens', 1024),
-                "temperature": kwargs.get('temperature', 0.7),
-                "messages": messages,
-            }
+            # Log parameters
+            logger.info("Using system prompt: %s", system[:50] if system else "None")
+            logger.info("Using model: %s", self.model)
             
-            # Add system message if provided
-            if system:
-                api_params["system"] = system
+            # Simple direct API call for debugging
+            try:
+                logger.info("Making API call to Anthropic...")
+                response = self.client.messages.create(
+                    model=self.model,
+                    max_tokens=kwargs.get('max_tokens', 1024),
+                    temperature=kwargs.get('temperature', 0.7),
+                    system=system,
+                    messages=messages
+                )
+                logger.info("API call completed successfully")
+            except Exception as e:
+                logger.error("API call failed: %s", str(e))
+                logger.error(traceback.format_exc())
+                raise RuntimeError(f"API call failed: {str(e)}") from e
             
-            # Add thinking parameters if enabled
-            if self._thinking_enabled:
-                api_params["max_thinking_length"] = self._thinking_length
-                api_params["max_thinking_tokens"] = kwargs.get('max_thinking_tokens', 
-                                                             self._thinking_length // 4)
-            
-            # Generate response
-            message = self.client.messages.create(**api_params)
-            
-            # Extract response and thinking
-            response = message.content[0].text
-            
-            # Check if thinking is available and enabled
-            if self._thinking_enabled and hasattr(message, 'thinking'):
-                thinking = message.thinking
-                return response, thinking
-            
-            return response
-            
-        except (ValueError, RuntimeError, ImportError) as exc:
-            logger.error("Error generating response from Anthropic: %s", str(exc))
-            raise RuntimeError(f"Error generating response from Anthropic: {str(exc)}") from exc
-
+            # Extract text from response
+            try:
+                logger.info("Extracting text from response")
+                logger.info("Response type: %s", type(response))
+                logger.info("Response structure: %s", str(response)[:100])
+                
+                response_text = response.content[0].text
+                logger.info("Extracted response text: %s", response_text[:50])
+                return response_text
+            except (IndexError, AttributeError) as e:
+                logger.error("Failed to extract text from response: %s", str(e))
+                logger.error("Response structure: %s", str(response))
+                raise ValueError(f"Failed to extract text from response: {str(e)}") from e
+                
+        except Exception as e:
+            logger.error("Error in generate_response: %s", str(e))
+            logger.error(traceback.format_exc())
+            raise RuntimeError(f"Error generating response: {str(e)}") from e
 
 class OpenAIProvider(LLMBaseProvider):
     """OpenAI API provider implementation."""

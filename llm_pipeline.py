@@ -1,5 +1,5 @@
 """
-Pipeline configuration for LLM components in REMOTE application.
+LLM Pipeline for managing the flow of messages through LLM components.
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
@@ -7,10 +7,10 @@ import logging
 import os
 from typing import Dict, Optional, Callable
 
-from llm_ui_component import ChatUIComponent, StatusManager
-from llm_core_component import CoreLLMComponent, InputClassifierComponent, OutputClassifierComponent
+from llm_components import LLMComponent, Message
+from llm_core_components import CoreLLMComponent, InputClassifierComponent, OutputClassifierComponent
 from llm_providers import AnthropicProvider, OpenAIProvider, LLMBaseProvider
-from llm_components import LLMComponent
+from llm_ui_components import ChatUIComponent, StatusManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -176,36 +176,57 @@ class LLMPipeline:
         Returns:
             Dictionary of created components
         """
-        # Create status manager if not already created
-        if not self.status_manager:
-            self.create_status_manager()
+        logger.info("Setting up basic pipeline...")
         
-        # Create provider if not provided
-        if provider is None:
-            try:
-                provider = self.create_anthropic_provider(enable_thinking=True)
-            except ValueError as e:
-                logger.error("Failed to create Anthropic provider: %s", e)
-                raise
-        
-        # Create UI component with status manager callback
-        ui_component = self.create_ui_component(
-            chat_widget, 
-            status_callback=self.status_manager.update_status
-        )
-        
-        # Create Core component
-        core_component = self.create_core_component(provider, system_prompt)
-        
-        # Connect components
-        ui_component.connect_output(core_component)
-        core_component.connect_output(ui_component)
-        
-        # Set up status callbacks
-        core_component.set_status_callback(self.status_manager.update_status)
-        
-        logger.info("Set up basic UI → Core → UI pipeline")
-        return self.components
+        try:
+            # Create status manager if not already created
+            if not self.status_manager:
+                logger.info("Creating status manager")
+                self.status_manager = StatusManager()
+            
+            # Create provider if not provided
+            if provider is None:
+                try:
+                    logger.info("Creating Anthropic provider")
+                    provider = self.create_anthropic_provider(enable_thinking=True)
+                    logger.info("Anthropic provider created successfully")
+                except (ValueError, ImportError) as e:
+                    logger.error("Failed to create Anthropic provider: %s", str(e))
+                    raise RuntimeError(f"Failed to create Anthropic provider: {str(e)}") from e
+            
+            # Create UI component with status manager callback
+            logger.info("Creating UI component")
+            ui_component = self.create_ui_component(
+                chat_widget, 
+                status_callback=self.status_manager.update_status
+            )
+            logger.info("UI component created successfully")
+            
+            # Create Core component
+            logger.info("Creating Core component")
+            core_component = self.create_core_component(
+                provider,
+                system_prompt=system_prompt
+            )
+            logger.info("Core component created successfully")
+            
+            # Connect components
+            logger.info("Connecting components")
+            ui_component.connect_output(core_component)
+            core_component.connect_output(ui_component)
+            
+            # Set status callbacks
+            core_component.set_status_callback(self.status_manager.update_status)
+            
+            logger.info("Basic pipeline setup complete")
+            return self.components
+            
+        except Exception as e:
+            logger.error("Error setting up basic pipeline: %s", str(e))
+            # Clean up any partially created components
+            self.components.clear()
+            self.providers.clear()
+            raise RuntimeError(f"Failed to set up basic pipeline: {str(e)}") from e
     
     def add_input_classifier(self, 
                            provider: Optional[LLMBaseProvider] = None,

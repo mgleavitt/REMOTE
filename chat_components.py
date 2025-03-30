@@ -3,11 +3,15 @@ Chat-related UI components for REMOTE application.
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
+import logging
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel, 
     QLineEdit, QPushButton, QScrollArea
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class ChatMessage(QFrame):
     """Widget for displaying a single chat message"""
@@ -48,9 +52,13 @@ class ChatMessage(QFrame):
 class ChatWidget(QWidget):
     """Modern chat widget with infinite scroll"""
     
+    # Signal emitted when a message is sent
+    message_sent = Signal(str)
+    
     def __init__(self, parent=None):
         """Initialize the chat widget."""
         super().__init__(parent)
+        logger.info("Initializing ChatWidget")
         
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -95,9 +103,12 @@ class ChatWidget(QWidget):
         self.input_layout.addWidget(self.send_button)
         
         self.layout.addLayout(self.input_layout)
+        logger.info("ChatWidget initialization complete")
     
     def add_message(self, text, is_user=False):
         """Add a message to the chat."""
+        logger.info("Adding message to chat - User: %s, Text: %s", is_user, text[:50])
+        
         # Remove the stretch if it exists
         if self.messages_layout.count() > 0:
             stretch_item = self.messages_layout.itemAt(self.messages_layout.count() - 1)
@@ -110,10 +121,23 @@ class ChatWidget(QWidget):
         
         # Add stretch back
         self.messages_layout.addStretch()
+        
+        # Scroll to the bottom
+        self.scroll_area.verticalScrollBar().setValue(
+            self.scroll_area.verticalScrollBar().maximum()
+        )
+        logger.info("Message added successfully")
     
     def send_message(self):
         """Send a message from the input field."""
         text = self.chat_input.text().strip()
         if text:
+            logger.info("Sending message: %s", text[:50])
+            # Add message to chat display
             self.add_message(text, is_user=True)
             self.chat_input.clear()
+            
+            # Emit the message for external handling
+            logger.info("Emitting message_sent signal")
+            self.message_sent.emit(text)
+            logger.info("Signal emitted successfully")

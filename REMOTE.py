@@ -8,13 +8,22 @@ import sys
 import os
 from datetime import datetime, timedelta
 import csv
+import asyncio
+import logging
+import traceback
+from test_pipeline import TestCoreComponent
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Import PySide6 classes
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QLineEdit, QScrollArea, QFrame, QSplitter,
     QTextEdit, QCalendarWidget, QDialog, QListView, QAbstractItemView,
-    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, QStyleOptionViewItem, QStyle, QSizePolicy, QMessageBox
+    QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, QStyleOptionViewItem, QStyle, QSizePolicy, QMessageBox,
+    QStatusBar
 )
 from PySide6.QtCore import (
     Qt, QDate, Signal, QAbstractListModel, QModelIndex, QRect,
@@ -34,6 +43,9 @@ from models import ActivityModel, DateGroupProxyModel, ActivityFilterProxyModel,
 
 # Import delegates
 from delegates import ActivityItemDelegate
+
+# Import LLM components
+from llm_pipeline import LLMPipeline
 
 # Constants and styling
 from styles import (
@@ -82,6 +94,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("REMOTE - Remote Education Management and Organization Tool for Education")
         self.resize(1200, 800)
         self.setMinimumSize(800, 600)  # Set minimum window size
+        
+        # Initialize LLM-related attributes
+        self.statusBar = None
+        self.llm_pipeline = None
+        self.status_manager = None
         
         # Get the absolute path to the icons directory
         self.icons_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icons")
@@ -166,6 +183,13 @@ class MainWindow(QMainWindow):
         # Apply stylesheet
         self.apply_stylesheet()
         
+        # Add Tools menu for LLM components
+        tools_menu = self.menuBar().addMenu("Tools")
+        add_input_classifier_action = tools_menu.addAction("Add Input Classifier")
+        add_input_classifier_action.triggered.connect(self.add_input_classifier)
+        add_output_classifier_action = tools_menu.addAction("Add Output Classifier")
+        add_output_classifier_action.triggered.connect(self.add_output_classifier)
+        
     def populate_activity_dates(self):
         """Populate activities grouped by date in the content area."""
         self.content_area.populate_activity_dates(self.filter_proxy_model, self.icons_dir)
@@ -197,30 +221,61 @@ class MainWindow(QMainWindow):
             # Reset all filters to unchecked state
             self._reset_filters()
     
-    def create_chat_area(self):
-        """Create the chat area with modern chat interface.
+    def create_chat_area(self) -> QWidget:
+        """Create the chat area widget.
         
         Returns:
             The chat area widget
         """
-        chat_widget = QWidget()
-        chat_widget.setProperty("class", "chat-area")
+        # Create chat widget
+        self.chat_widget = ChatWidget()
         
-        layout = QVBoxLayout(chat_widget)
-        layout.setContentsMargins(16, 12, 16, 16)
+        # Try to set up LLM integration
+        try:
+            self.setup_llm_integration()
+        except Exception as e:
+            logger.error("Failed to set up LLM integration: %s", str(e))
+            # Add a message to the chat widget explaining the situation
+            self.chat_widget.add_message(
+                "Note: LLM integration is not available. Please set the ANTHROPIC_API_KEY "
+                "environment variable to enable AI features.",
+                is_user=False
+            )
         
-        # Create modern chat widget
-        self.chat = ChatWidget()
-        layout.addWidget(self.chat)
+        return self.chat_widget
         
-        # Add sample messages
-        self.add_sample_chat_messages()
+    def update_status_bar(self, status: str):
+        """Update the status bar with a message.
         
-        return chat_widget
+        Args:
+            status: Status message to display
+        """
+        if self.statusBar:
+            self.statusBar.showMessage(status, 5000)  # Show for 5 seconds
+    
+    def add_input_classifier(self):
+        """Add the input classifier to the LLM pipeline."""
+        try:
+            self.llm_pipeline.add_input_classifier(
+                system_prompt="You are an input validator..."
+            )
+            self.statusBar.showMessage("Input classifier added to pipeline", 3000)
+        except (ValueError, RuntimeError) as e:
+            self.statusBar.showMessage(f"Error adding input classifier: {str(e)}", 5000)
+    
+    def add_output_classifier(self):
+        """Add the output classifier to the LLM pipeline."""
+        try:
+            self.llm_pipeline.add_output_classifier(
+                system_prompt="You are an output validator..."
+            )
+            self.statusBar.showMessage("Output classifier added to pipeline", 3000)
+        except (ValueError, RuntimeError) as e:
+            self.statusBar.showMessage(f"Error adding output classifier: {str(e)}", 5000)
     
     def add_sample_chat_messages(self):
         """Add sample messages to the chat."""
-        self.chat.add_message("What was the slack discussion about Module 07 SQL Lab - ProblemSet02?", 
+        self.chat_widget.add_message("What was the slack discussion about Module 07 SQL Lab - ProblemSet02?", 
                              is_user=True)
         
         slack_response = (
@@ -237,11 +292,11 @@ class MainWindow(QMainWindow):
             "So, if you see 70.30 there, I suggest that you save/protect your existing work, download the new(er) zip file, and pull the updated Problem 13 file\n"
             "(Koushik confirmed that the fix to Problem 13 was the only change)."
         )
-        self.chat.add_message(slack_response, is_user=False)
+        self.chat_widget.add_message(slack_response, is_user=False)
     
     def handle_slack_response(self, slack_response):
         """Handle the response from the Slack agent."""
-        self.chat.add_message(slack_response, is_user=False)
+        self.chat_widget.add_message(slack_response, is_user=False)
     
     def apply_stylesheet(self):
         """Apply the appropriate stylesheet to the application."""
@@ -255,15 +310,174 @@ class MainWindow(QMainWindow):
             # Custom stylesheet
             self.setStyleSheet(get_stylesheet())
 
+    # Replace the setup_llm_integration method in MainWindow class with this version
+    def setup_llm_integration(self):
+        """Set up LLM integration with status bar updates."""
+        try:
+            # Create status bar if not already created
+            if not self.statusBar:
+                self.statusBar = QStatusBar()
+                self.setStatusBar(self.statusBar)
+            
+            # Check for required API key
+            api_key = os.environ.get("ANTHROPIC_API_KEY")
+            if not api_key:
+                error_msg = (
+                    "Anthropic API key not found. Please set the ANTHROPIC_API_KEY "
+                    "environment variable or install the package with: pip install anthropic"
+                )
+                logger.error(error_msg)
+                self.statusBar.showMessage(error_msg, 10000)  # Show for 10 seconds
+                
+                # Fall back to test mode
+                logger.info("Falling back to test mode due to missing API key")
+                self.setup_test_llm_integration()
+                return
+            
+            # Create LLM pipeline
+            self.llm_pipeline = LLMPipeline()
+            
+            try:
+                # Create the Anthropic provider with the updated implementation
+                from llm_providers import AnthropicProvider
+                provider = AnthropicProvider(api_key=api_key, model="claude-3-opus-20240229")
+                provider.enable_thinking(max_thinking_length=4000)
+                logger.info("Created AnthropicProvider")
+                
+                # Create status manager
+                self.status_manager = self.llm_pipeline.create_status_manager()
+                
+                # Create UI component
+                ui_component = self.llm_pipeline.create_ui_component(
+                    self.chat_widget, 
+                    status_callback=self.status_manager.update_status
+                )
+                
+                # Create core component
+                from llm_core_components import CoreLLMComponent
+                core_component = CoreLLMComponent(
+                    provider,
+                    system_prompt="You are an educational assistant for a university student. Provide helpful, accurate, and educational responses. Be concise but informative."
+                )
+                logger.info("Created CoreLLMComponent")
+                
+                # Connect components
+                ui_component.connect_output(core_component)
+                core_component.connect_output(ui_component)
+                
+                # Set status callbacks
+                core_component.set_status_callback(self.status_manager.update_status)
+                
+                # Connect status manager to status bar
+                if self.status_manager:
+                    self.status_manager.status_changed.connect(self.update_status_bar)
+                    logger.info("Status manager connected to status bar")
+                
+                # Add a debug message to the chat
+                self.chat_widget.add_message(
+                    "LLM integration active. Type a message to chat with Claude.",
+                    is_user=False
+                )
+                
+                logger.info("LLM integration setup complete")
+                self.statusBar.showMessage("LLM integration active", 3000)
+                
+            except Exception as e:
+                logger.error("Failed to set up real LLM integration: %s", str(e))
+                logger.error(traceback.format_exc())
+                self.statusBar.showMessage(f"Error: {str(e)}", 10000)
+                
+                # Fall back to test mode
+                logger.info("Falling back to test mode due to exception")
+                self.setup_test_llm_integration()
+                
+        except Exception as e:
+            logger.error("Error in LLM integration setup: %s", str(e))
+            logger.error(traceback.format_exc())
+            self.statusBar.showMessage(f"Error setting up LLM integration: {str(e)}", 10000)
+            
+            # Add error message to chat for visibility
+            self.chat_widget.add_message(
+                f"Error setting up LLM integration: {str(e)}",
+                is_user=False
+            )
+
+    def setup_test_llm_integration(self):
+        """Set up test LLM integration as fallback."""
+        try:
+            # Create LLM pipeline if not already created
+            if not self.llm_pipeline:
+                self.llm_pipeline = LLMPipeline()
+            
+            # Create status manager if not already created
+            if not self.status_manager:
+                self.status_manager = self.llm_pipeline.create_status_manager()
+            
+            # Create UI component
+            ui_component = self.llm_pipeline.create_ui_component(
+                self.chat_widget, 
+                status_callback=self.status_manager.update_status
+            )
+            
+            # Create test core component
+            from test_pipeline import TestCoreComponent
+            test_core = TestCoreComponent()
+            logger.info("Created TestCoreComponent for test mode")
+            
+            # Connect components
+            ui_component.connect_output(test_core)
+            test_core.connect_output(ui_component)
+            
+            # Set status callbacks
+            test_core.set_status_callback(self.status_manager.update_status)
+            
+            # Connect status manager to status bar
+            if self.status_manager:
+                self.status_manager.status_changed.connect(self.update_status_bar)
+            
+            # Add a debug message to the chat
+            self.chat_widget.add_message(
+                "LLM TEST MODE active. Messages will get pre-programmed responses.",
+                is_user=False
+            )
+            
+            logger.info("Test mode integration setup complete")
+            self.statusBar.showMessage("Test mode integration active", 3000)
+            
+        except Exception as e:
+            logger.error("Error in test LLM integration setup: %s", str(e))
+            self.statusBar.showMessage(f"Error setting up test integration: {str(e)}", 10000)
 
 if __name__ == "__main__":
     # Create the application
     app = QApplication(sys.argv)
     
+    # Create and set up asyncio event loop
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
     # Create and show the main window
     window = MainWindow()
     window.show()
     
-    # Start the event loop
-    sys.exit(app.exec())
+    # Create a timer to process async tasks
+    async_timer = QTimer()
+    async_timer.timeout.connect(lambda: None)  # Just trigger event loop processing
+    async_timer.start(10)  # Check every 10ms
     
+    try:
+        # Start the event loop
+        sys.exit(app.exec())
+    finally:
+        # Make sure to stop the loop before closing it
+        if loop.is_running():
+            loop.stop()
+        # Close any pending tasks
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
+            task.cancel()
+        # Run loop until tasks are cancelled
+        if pending:
+            loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+        # Now it's safe to close the loop
+        loop.close()
