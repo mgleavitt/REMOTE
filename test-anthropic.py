@@ -45,7 +45,7 @@ def test_anthropic_api():
         print("\nSending test prompt to Anthropic API...")
         # Note: No await needed - this is a synchronous call in the current API
         response = client.messages.create(
-            model="claude-3-opus-20240229",  # Using a more recent model
+            model="claude-3-7-sonnet-20250219",  # Using a more recent model
             max_tokens=1024,
             temperature=0.7,
             system="You are a helpful AI assistant for testing purposes.",

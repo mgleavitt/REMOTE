@@ -310,7 +310,6 @@ class MainWindow(QMainWindow):
             # Custom stylesheet
             self.setStyleSheet(get_stylesheet())
 
-    # Replace the setup_llm_integration method in MainWindow class with this version
     def setup_llm_integration(self):
         """Set up LLM integration with status bar updates."""
         try:
@@ -338,10 +337,10 @@ class MainWindow(QMainWindow):
             self.llm_pipeline = LLMPipeline()
             
             try:
-                # Create the Anthropic provider with the updated implementation
+                # Create the Anthropic provider
                 from llm_providers import AnthropicProvider
-                provider = AnthropicProvider(api_key=api_key, model="claude-3-opus-20240229")
-                provider.enable_thinking(max_thinking_length=4000)
+                provider = AnthropicProvider(api_key=api_key, model="claude-3-7-sonnet-20250219")
+                provider.enable_thinking(budget_tokens=16000)
                 logger.info("Created AnthropicProvider")
                 
                 # Create status manager
@@ -401,52 +400,6 @@ class MainWindow(QMainWindow):
                 f"Error setting up LLM integration: {str(e)}",
                 is_user=False
             )
-
-    def setup_test_llm_integration(self):
-        """Set up test LLM integration as fallback."""
-        try:
-            # Create LLM pipeline if not already created
-            if not self.llm_pipeline:
-                self.llm_pipeline = LLMPipeline()
-            
-            # Create status manager if not already created
-            if not self.status_manager:
-                self.status_manager = self.llm_pipeline.create_status_manager()
-            
-            # Create UI component
-            ui_component = self.llm_pipeline.create_ui_component(
-                self.chat_widget, 
-                status_callback=self.status_manager.update_status
-            )
-            
-            # Create test core component
-            from test_pipeline import TestCoreComponent
-            test_core = TestCoreComponent()
-            logger.info("Created TestCoreComponent for test mode")
-            
-            # Connect components
-            ui_component.connect_output(test_core)
-            test_core.connect_output(ui_component)
-            
-            # Set status callbacks
-            test_core.set_status_callback(self.status_manager.update_status)
-            
-            # Connect status manager to status bar
-            if self.status_manager:
-                self.status_manager.status_changed.connect(self.update_status_bar)
-            
-            # Add a debug message to the chat
-            self.chat_widget.add_message(
-                "LLM TEST MODE active. Messages will get pre-programmed responses.",
-                is_user=False
-            )
-            
-            logger.info("Test mode integration setup complete")
-            self.statusBar.showMessage("Test mode integration active", 3000)
-            
-        except Exception as e:
-            logger.error("Error in test LLM integration setup: %s", str(e))
-            self.statusBar.showMessage(f"Error setting up test integration: {str(e)}", 10000)
 
 if __name__ == "__main__":
     # Create the application

@@ -1,12 +1,12 @@
 """
-UI Component for LLM integration with existing chat widget.
+UI Component for LLM integration with existing chat widget (Synchronous version).
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
 import logging
-from typing import Optional, Callable, Union, Coroutine, Any
+from typing import Optional, Callable
 from PySide6.QtCore import QObject, Signal, Slot, QTimer
-import asyncio
+import threading
 
 from llm_components import LLMComponent, Message, MessageType
 
@@ -39,13 +39,6 @@ class ChatUIComponent(LLMComponent):
         # Set status callback if provided
         if status_callback:
             self.set_status_callback(status_callback)
-        
-        # Use the existing event loop
-        try:
-            self._loop = asyncio.get_event_loop()
-        except RuntimeError:
-            self._loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(self._loop)
         
         logger.info("%s initialized with chat widget", self.name)
     

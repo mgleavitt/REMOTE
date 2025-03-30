@@ -1,5 +1,5 @@
 """
-LLM Pipeline for managing the flow of messages through LLM components.
+LLM Pipeline for managing the flow of messages through LLM components (Synchronous version).
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
@@ -32,9 +32,9 @@ class LLMPipeline:
         return self.status_manager
     
     def create_anthropic_provider(self, api_key: Optional[str] = None, 
-                                model: str = "claude-3-sonnet-20240229",
+                                model: str = "claude-3-7-sonnet-20250219",
                                 enable_thinking: bool = False,
-                                max_thinking_length: int = 4000) -> AnthropicProvider:
+                                thinking_budget: int = 4000) -> AnthropicProvider:
         """Create an Anthropic provider.
         
         Args:
@@ -59,7 +59,7 @@ class LLMPipeline:
         
         # Enable thinking if requested
         if enable_thinking:
-            provider.enable_thinking(max_thinking_length=max_thinking_length)
+            provider.enable_thinking(budget_tokens=thinking_budget)
         
         # Add to providers dictionary
         self.providers["anthropic"] = provider

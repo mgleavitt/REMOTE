@@ -1,14 +1,13 @@
 """
 Base components for LLM integration in REMOTE application.
-Defines the messaging system and component interfaces.
+Defines the messaging system and component interfaces with synchronous approach.
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
-from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, List, Callable, Union, Coroutine
-from enum import Enum
-import asyncio
 import logging
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Optional, List, Callable
+from enum import Enum
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -53,9 +52,6 @@ class LLMComponent(ABC):
         self.name = name
         self._output_connections: List['LLMComponent'] = []
         self._status_callback: Optional[Callable[[str], None]] = None
-        
-        # Get the event loop from the main thread
-        self._loop = asyncio.get_event_loop()
     
     def connect_output(self, component: 'LLMComponent') -> None:
         """Connect this component's output to another component's input."""
@@ -89,60 +85,31 @@ class LLMComponent(ABC):
         logger.info("[%s] %s", self.name, status_msg)
         if self._status_callback:
             self._status_callback(f"[{self.name}] {status_msg}")
-        
+    
     def send_output(self, message: Message) -> None:
         """Send output message to all connected components."""
         for component in self._output_connections:
-            # Get the result from process_input
-            result = component.process_input(message)
-            
-            # Check if the result is a coroutine that needs to be awaited
-            if asyncio.iscoroutine(result):
-                logger.info("Running coroutine from %s.process_input in event loop", component.name)
+            try:
+                logger.info("Sending message from %s to %s", self.name, component.name)
+                # Directly call process_input - no coroutines to handle
+                component.process_input(message)
+            except Exception as e:
+                logger.error("Error sending message to %s: %s", component.name, str(e))
+                error_message = Message(
+                    content=f"Error processing message: {str(e)}",
+                    msg_type=MessageType.ERROR
+                )
+                # Try to send an error message, but don't cause a cascade of errors
                 try:
-                    # Use run_coroutine_threadsafe and wait for it to complete
-                    # This ensures the coroutine is actually executed
-                    future = asyncio.run_coroutine_threadsafe(result, self._loop)
-                    
-                    # The key part: actually get the result which forces the future to complete
-                    # Use a timeout to prevent hanging indefinitely
-                    future.result(timeout=30)  # 30 second timeout
-                    
-                    logger.info("Coroutine completed successfully")
-                except asyncio.TimeoutError:
-                    logger.error("Coroutine timed out after 30 seconds")
-                    error_message = Message(
-                        content="Request timed out. Please try again later.",
-                        msg_type=MessageType.ERROR
-                    )
-                    self.send_output(error_message)
-                except Exception as e:
-                    logger.error("Error executing coroutine: %s", str(e))
-                    error_message = Message(
-                        content=f"Error processing message: {str(e)}",
-                        msg_type=MessageType.ERROR
-                    )
-                    self.send_output(error_message)
-
-    def _handle_task_result(self, future):
-        """Handle the result of an async task."""
-        try:
-            future.result()
-        except Exception as e:
-            logger.error("Task error: %s", str(e))
-            error_message = Message(
-                content=f"Error processing message: {str(e)}",
-                msg_type=MessageType.ERROR
-            )
-            self.send_output(error_message)
+                    component.process_input(error_message)
+                except Exception:
+                    logger.error("Failed to send error message to %s", component.name)
     
     @abstractmethod
-    def process_input(self, message: Message) -> Union[None, Coroutine[Any, Any, None]]:
+    def process_input(self, message: Message) -> None:
         """Process an input message.
         
         Args:
             message: The message to process
-            
-        Returns:
-            None for synchronous methods, or a coroutine for async methods
         """
+        pass
