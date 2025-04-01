@@ -1,5 +1,5 @@
 """
-Sidebar components for REMOTE application.
+Sidebar components for REMOTE application with course context support.
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
@@ -171,3 +171,15 @@ class Sidebar(QWidget):
         self.past_events_btn.clicked.connect(callback)
         self.now_events_btn.clicked.connect(callback)
         self.upcoming_events_btn.clicked.connect(callback)
+    
+    def connect_course_context_change(self, callback):
+        """Connect course selection changes to a callback for updating LLM context.
+        
+        Args:
+            callback: Function to call when course selections change
+        """
+        # Connect class buttons to the course context callback
+        for i in range(self.classes_layout.count()):
+            widget = self.classes_layout.itemAt(i).widget()
+            if isinstance(widget, ClassButton):
+                widget.clicked.connect(callback)

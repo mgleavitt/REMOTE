@@ -336,7 +336,7 @@ class MainWindow(QMainWindow):
             self.setStyleSheet(get_stylesheet())
 
     def setup_llm_integration(self):
-        """Set up LLM integration with status bar updates."""
+        """Set up LLM integration with status bar updates and conversation history."""
         try:
             # Create status bar if not already created
             if not self.statusBar:
@@ -370,14 +370,22 @@ class MainWindow(QMainWindow):
                     thinking_budget=16000
                 )
                 
+                # Set up sidebar reference for course context
+                self.llm_pipeline.set_sidebar_reference(self.sidebar)
+                
                 # Use setup_basic_pipeline to register components with standard names
+                # Add max_history_turns parameter for conversation history
                 self.llm_pipeline.setup_basic_pipeline(
                     self.chat_widget,
                     provider,
                     system_prompt="You are an educational assistant for a university student. "
                                 "Provide helpful, accurate, and educational responses. "
-                                "Be concise but informative."
+                                "Be concise but informative.",
+                    max_history_turns=20  # Keep 20 conversation turns
                 )
+                
+                # Connect course filter changes to update context
+                self.sidebar.connect_course_context_change(self.update_course_context)
                 
                 # Connect status manager to status bar (if needed)
                 if self.llm_pipeline.status_manager:
@@ -386,12 +394,12 @@ class MainWindow(QMainWindow):
                 
                 # Add a message to the chat
                 self.chat_widget.add_message(
-                    "LLM integration active. Type a message to chat with Claude.",
+                    "LLM integration active with conversation history. Type a message to chat with Claude.",
                     is_user=False
                 )
                 
-                logger.info("LLM integration setup complete")
-                self.statusBar.showMessage("LLM integration active", 3000)
+                logger.info("LLM integration setup complete with conversation history")
+                self.statusBar.showMessage("LLM integration active with conversation history", 3000)
                 
             except (ValueError, RuntimeError, ImportError, ConnectionError) as e:
                 logger.error("Failed to set up real LLM integration: %s", str(e))
@@ -658,6 +666,15 @@ class MainWindow(QMainWindow):
         
         # Show dialog
         dialog.exec()
+
+    def update_course_context(self):
+        """Update the course context in the LLM when sidebar filters change."""
+        if self.llm_pipeline:
+            try:
+                self.llm_pipeline.update_course_context()
+                logger.info("Course context updated based on filter changes")
+            except (AttributeError, RuntimeError) as e:
+                logger.error("Failed to update course context: %s", str(e))
 
 if __name__ == "__main__":
     # Create the application

@@ -1,5 +1,5 @@
 """
-LLM Pipeline for managing the flow of messages through LLM components (Synchronous version).
+LLM Pipeline for managing the flow of messages through LLM components with conversation history.
 """
 # pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name
 
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class LLMPipeline:
-    """Manager for creating and connecting LLM components."""
+    """Manager for creating and connecting LLM components with conversation history."""
     
     def __init__(self):
         """Initialize the LLM pipeline."""
@@ -28,6 +28,30 @@ class LLMPipeline:
         self.providers = {}
         self.status_manager = None
         self.constitution_manager = None
+        self.sidebar = None  # Store reference to sidebar for course context
+    
+    def set_sidebar_reference(self, sidebar):
+        """Store reference to sidebar for getting course context.
+        
+        Args:
+            sidebar: The sidebar component
+        """
+        self.sidebar = sidebar
+        logger.info("Sidebar reference set for course context")
+        
+        # Update course context in Core LLM if both are available
+        self.update_course_context()
+    
+    def update_course_context(self):
+        """Update the course context in the Core LLM from the sidebar."""
+        if self.sidebar and 'core' in self.components:
+            try:
+                selected_courses = list(self.sidebar.get_selected_courses())
+                self.components['core'].set_course_context(selected_courses)
+                logger.info("Updated course context in Core LLM: %s", 
+                           ", ".join(selected_courses))
+            except (AttributeError, TypeError) as e:
+                logger.error("Failed to update course context: %s", str(e))
     
     def create_status_manager(self):
         """Create and return a status manager for UI updates."""
@@ -44,7 +68,7 @@ class LLMPipeline:
             api_key: Anthropic API key (uses ANTHROPIC_API_KEY env var if None)
             model: Anthropic model to use
             enable_thinking: Whether to enable thinking tags
-            max_thinking_length: Maximum length for thinking output
+            thinking_budget: Maximum tokens for thinking output
             
         Returns:
             The initialized provider
@@ -113,21 +137,31 @@ class LLMPipeline:
         return component
     
     def create_core_component(self, provider: LLMBaseProvider,
-                           system_prompt: str = "") -> CoreLLMComponent:
-        """Create a Core LLM component.
+                           system_prompt: str = "",
+                           max_history_turns: int = 20) -> CoreLLMComponent:
+        """Create a Core LLM component with conversation history.
         
         Args:
             provider: The LLM provider to use
             system_prompt: System prompt for the LLM
+            max_history_turns: Maximum conversation turns to keep in history
             
         Returns:
             The initialized Core component
         """
-        # Create component
-        component = CoreLLMComponent(provider, system_prompt)
+        # Create component with history support
+        component = CoreLLMComponent(
+            provider, 
+            system_prompt=system_prompt,
+            max_history_turns=max_history_turns
+        )
         
         # Add to components dictionary
         self.components["core"] = component
+        
+        # Update course context if sidebar is available
+        self.update_course_context()
+        
         return component
     
     def create_input_classifier(self, provider: LLMBaseProvider,
@@ -168,18 +202,20 @@ class LLMPipeline:
     
     def setup_basic_pipeline(self, chat_widget, 
                           provider: Optional[LLMBaseProvider] = None,
-                          system_prompt: str = "") -> Dict[str, LLMComponent]:
-        """Set up a basic UI → Core → UI pipeline.
+                          system_prompt: str = "",
+                          max_history_turns: int = 20) -> Dict[str, LLMComponent]:
+        """Set up a basic UI → Core → UI pipeline with conversation history.
         
         Args:
             chat_widget: The existing ChatWidget instance
             provider: The LLM provider to use (creates Anthropic if None)
             system_prompt: System prompt for the Core LLM
+            max_history_turns: Maximum conversation turns to keep in history
             
         Returns:
             Dictionary of created components
         """
-        logger.info("Setting up basic pipeline...")
+        logger.info("Setting up basic pipeline with conversation history...")
         
         try:
             # Create status manager if not already created
@@ -205,13 +241,14 @@ class LLMPipeline:
             )
             logger.info("UI component created successfully")
             
-            # Create Core component
-            logger.info("Creating Core component")
+            # Create Core component with history support
+            logger.info("Creating Core component with conversation history")
             core_component = self.create_core_component(
                 provider,
-                system_prompt=system_prompt
+                system_prompt=system_prompt,
+                max_history_turns=max_history_turns
             )
-            logger.info("Core component created successfully")
+            logger.info("Core component with conversation history created successfully")
             
             # Connect components
             logger.info("Connecting components")
@@ -221,7 +258,7 @@ class LLMPipeline:
             # Set status callbacks
             core_component.set_status_callback(self.status_manager.update_status)
             
-            logger.info("Basic pipeline setup complete")
+            logger.info("Basic pipeline with conversation history setup complete")
             return self.components
             
         except Exception as e:
