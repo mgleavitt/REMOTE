@@ -2,7 +2,7 @@
 REMOTE (Remote Education Management and Organization Tool for Education)
 Improved implementation with UI enhancements based on feedback.
 """
-# pylint: disable=no-name-in-module, import-error, trailing-whitespace, line-too-long, no-member, unused-import, too-many-lines, invalid-name
+# pylint: disable=no-name-in-module, trailing-whitespace, unused-import, invalid-name, line-too-long
 
 import sys
 import os
@@ -14,7 +14,7 @@ import traceback
 
 # Import PySide6 classes
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QApplication, QMainWindow, QMenu, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QLineEdit, QScrollArea, QFrame, QSplitter,
     QTextEdit, QCalendarWidget, QDialog, QListView, QAbstractItemView,
     QStyledItemDelegate, QGroupBox, QDateEdit, QToolTip, QCheckBox, 
@@ -27,8 +27,10 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
     QIcon, QFontMetrics, QPainter, QColor, QBrush, QPen, QFont,
-    QCursor, QPixmap, QStandardItemModel, QStandardItem
+    QCursor, QPixmap, QStandardItemModel, QStandardItem, QAction
 )
+
+#from PySide6.QtWidgets import QMenu, QAction, QDialog, QVBoxLayout, QTextEdit, QLabel, QPushButton
 
 # Import data agent
 from agents.data_agent_coursera_sim import DataAgentCourseraSim
@@ -45,6 +47,7 @@ from delegates import ActivityItemDelegate
 from llm_pipeline import LLMPipeline
 from llm_providers import AnthropicProvider
 from llm_core_components import CoreLLMComponent
+from llm_components import Message, MessageType
 
 # Constants and styling
 from styles import (
@@ -182,12 +185,9 @@ class MainWindow(QMainWindow):
         # Apply stylesheet
         self.apply_stylesheet()
         
-        # Add Tools menu for LLM components
-        tools_menu = self.menuBar().addMenu("Tools")
-        add_input_classifier_action = tools_menu.addAction("Add Input Classifier")
-        add_input_classifier_action.triggered.connect(self.add_input_classifier)
-        add_output_classifier_action = tools_menu.addAction("Add Output Classifier")
-        add_output_classifier_action.triggered.connect(self.add_output_classifier)
+        # Set up menu system
+        self.setup_menu_system()
+        
         
     def populate_activity_dates(self):
         """Populate activities grouped by date in the content area."""
@@ -255,22 +255,48 @@ class MainWindow(QMainWindow):
     def add_input_classifier(self):
         """Add the input classifier to the LLM pipeline."""
         try:
+            if not self.llm_pipeline:
+                self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+                return
+            
+            # Check if classifier already exists
+            if "input_classifier" in self.llm_pipeline.components:
+                self.statusBar.showMessage("Input classifier already added to pipeline", 3000)
+                return
+            
+            # Add classifier to pipeline
             self.llm_pipeline.add_input_classifier(
-                system_prompt="You are an input validator..."
+                constitution_name="input-classifier"
             )
             self.statusBar.showMessage("Input classifier added to pipeline", 3000)
-        except (ValueError, RuntimeError) as e:
-            self.statusBar.showMessage(f"Error adding input classifier: {str(e)}", 5000)
-    
+            
+        except (ValueError, RuntimeError, ImportError) as e:
+            error_msg = f"Error adding input classifier: {str(e)}"
+            self.statusBar.showMessage(error_msg, 5000)
+            logger.error(error_msg)
+            
     def add_output_classifier(self):
         """Add the output classifier to the LLM pipeline."""
         try:
+            if not self.llm_pipeline:
+                self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+                return
+            
+            # Check if classifier already exists
+            if "output_classifier" in self.llm_pipeline.components:
+                self.statusBar.showMessage("Output classifier already added to pipeline", 3000)
+                return
+            
+            # Add classifier to pipeline
             self.llm_pipeline.add_output_classifier(
-                system_prompt="You are an output validator..."
+                constitution_name="output-classifier"
             )
             self.statusBar.showMessage("Output classifier added to pipeline", 3000)
-        except (ValueError, RuntimeError) as e:
-            self.statusBar.showMessage(f"Error adding output classifier: {str(e)}", 5000)
+            
+        except (ValueError, RuntimeError, ImportError) as e:
+            error_msg = f"Error adding output classifier: {str(e)}"
+            self.statusBar.showMessage(error_msg, 5000)
+            logger.error(error_msg)            
     
     def add_sample_chat_messages(self):
         """Add sample messages to the chat."""
@@ -322,10 +348,10 @@ class MainWindow(QMainWindow):
             if not api_key:
                 error_msg = (
                     "Anthropic API key not found. Please set the ANTHROPIC_API_KEY "
-                    "environment variable or install the package with: pip install anthropic"
+                    "environment variable."
                 )
                 logger.error(error_msg)
-                self.statusBar.showMessage(error_msg, 10000)  # Show for 10 seconds
+                self.statusBar.showMessage(error_msg, 10000)  # 10 seconds
                 
                 # Fall back to test mode
                 logger.info("Falling back to test mode due to missing API key")
@@ -337,39 +363,28 @@ class MainWindow(QMainWindow):
             
             try:
                 # Create the Anthropic provider
-                provider = AnthropicProvider(api_key=api_key, model="claude-3-7-sonnet-20250219")
-                provider.enable_thinking(budget_tokens=16000)
-                logger.info("Created AnthropicProvider")
-                
-                # Create status manager
-                self.status_manager = self.llm_pipeline.create_status_manager()
-                
-                # Create UI component
-                ui_component = self.llm_pipeline.create_ui_component(
-                    self.chat_widget, 
-                    status_callback=self.status_manager.update_status
+                provider = self.llm_pipeline.create_anthropic_provider(
+                    api_key=api_key, 
+                    model="claude-3-7-sonnet-20250219",
+                    enable_thinking=True,
+                    thinking_budget=16000
                 )
                 
-                # Create core component
-                core_component = CoreLLMComponent(
+                # Use setup_basic_pipeline to register components with standard names
+                self.llm_pipeline.setup_basic_pipeline(
+                    self.chat_widget,
                     provider,
-                    system_prompt="You are an educational assistant for a university student. Provide helpful, accurate, and educational responses. Be concise but informative."
+                    system_prompt="You are an educational assistant for a university student. "
+                                "Provide helpful, accurate, and educational responses. "
+                                "Be concise but informative."
                 )
-                logger.info("Created CoreLLMComponent")
                 
-                # Connect components
-                ui_component.connect_output(core_component)
-                core_component.connect_output(ui_component)
-                
-                # Set status callbacks
-                core_component.set_status_callback(self.status_manager.update_status)
-                
-                # Connect status manager to status bar
-                if self.status_manager:
-                    self.status_manager.status_changed.connect(self.update_status_bar)
+                # Connect status manager to status bar (if needed)
+                if self.llm_pipeline.status_manager:
+                    self.llm_pipeline.status_manager.status_changed.connect(self.update_status_bar)
                     logger.info("Status manager connected to status bar")
                 
-                # Add a debug message to the chat
+                # Add a message to the chat
                 self.chat_widget.add_message(
                     "LLM integration active. Type a message to chat with Claude.",
                     is_user=False
@@ -378,7 +393,7 @@ class MainWindow(QMainWindow):
                 logger.info("LLM integration setup complete")
                 self.statusBar.showMessage("LLM integration active", 3000)
                 
-            except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
+            except (ValueError, RuntimeError, ImportError, ConnectionError) as e:
                 logger.error("Failed to set up real LLM integration: %s", str(e))
                 logger.error(traceback.format_exc())
                 self.statusBar.showMessage(f"Error: {str(e)}", 10000)
@@ -387,7 +402,7 @@ class MainWindow(QMainWindow):
                 logger.info("Falling back to test mode due to exception")
                 self.setup_test_llm_integration()
                 
-        except (ValueError, RuntimeError, ImportError, ConnectionError, TimeoutError) as e:
+        except Exception as e:  # Broader exception for the outer setup process
             logger.error("Error in LLM integration setup: %s", str(e))
             logger.error(traceback.format_exc())
             self.statusBar.showMessage(f"Error setting up LLM integration: {str(e)}", 10000)
@@ -397,6 +412,252 @@ class MainWindow(QMainWindow):
                 f"Error setting up LLM integration: {str(e)}",
                 is_user=False
             )
+
+    def setup_classifier_verification(self):
+        """Set up verification tools for classifiers in the Tools menu."""
+        # Add separator in Tools menu
+        self.menuBar().findChild(QMenu, "Tools").addSeparator()
+        
+        # Create verification menu
+        verification_menu = self.menuBar().findChild(QMenu, "Tools").addMenu("Classifier Verification")
+        
+        # Add actions
+        verify_classifiers_action = verification_menu.addAction("Verify Classifiers")
+        verify_classifiers_action.triggered.connect(self.verify_classifiers)
+        
+        test_input_classifier_action = verification_menu.addAction("Test Input Classifier")
+        test_input_classifier_action.triggered.connect(self.test_input_classifier)
+        
+        test_output_classifier_action = verification_menu.addAction("Test Output Classifier")
+        test_output_classifier_action.triggered.connect(self.test_output_classifier)
+        
+        show_pipeline_action = verification_menu.addAction("Show Pipeline Status")
+        show_pipeline_action.triggered.connect(self.show_pipeline_status)
+
+    def setup_menu_system(self):
+        """Set up the menu bar with Tools menu for LLM features."""
+        # Create menu bar if not exists
+        menu_bar = self.menuBar()
+        
+        # Add Tools menu
+        tools_menu = menu_bar.addMenu("Tools")
+        
+        # Add LLM management actions
+        add_input_classifier_action = QAction("Add Input Classifier", self)
+        add_input_classifier_action.triggered.connect(self.add_input_classifier)
+        tools_menu.addAction(add_input_classifier_action)
+        
+        add_output_classifier_action = QAction("Add Output Classifier", self)
+        add_output_classifier_action.triggered.connect(self.add_output_classifier)
+        tools_menu.addAction(add_output_classifier_action)
+        
+        # Add separator and verification submenu
+        tools_menu.addSeparator()
+        self.setup_verification_menu(tools_menu)
+        
+        logger.info("Menu system initialized")
+
+    def setup_verification_menu(self, parent_menu):
+        """Set up the classifier verification submenu."""
+        # Create verification submenu
+        verification_menu = parent_menu.addMenu("Classifier Verification")
+        
+        # Add verification actions
+        verify_action = QAction("Verify Classifiers", self)
+        verify_action.triggered.connect(self.verify_classifiers)
+        verification_menu.addAction(verify_action)
+        
+        test_input_action = QAction("Test Input Classifier", self)
+        test_input_action.triggered.connect(self.test_input_classifier)
+        verification_menu.addAction(test_input_action)
+        
+        test_output_action = QAction("Test Output Classifier", self)
+        test_output_action.triggered.connect(self.test_output_classifier)
+        verification_menu.addAction(test_output_action)
+        
+        status_action = QAction("Show Pipeline Status", self)
+        status_action.triggered.connect(self.show_pipeline_status)
+        verification_menu.addAction(status_action)
+
+    def verify_classifiers(self):
+        """Check if classifiers are connected in the pipeline and display status."""
+        if not self.llm_pipeline:
+            self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+            self.chat_widget.add_message(
+                "Cannot verify classifiers: LLM pipeline not initialized.",
+                is_user=False
+            )
+            return
+        
+        # Check for classifiers in pipeline
+        input_classifier_active = "input_classifier" in self.llm_pipeline.components
+        output_classifier_active = "output_classifier" in self.llm_pipeline.components
+        
+        # Create status message
+        status_message = "Classifier Status:\n"
+        status_message += f"• Input Classifier: {'ACTIVE' if input_classifier_active else 'NOT ACTIVE'}\n"
+        status_message += f"• Output Classifier: {'ACTIVE' if output_classifier_active else 'NOT ACTIVE'}\n\n"
+        
+        # Suggest tests if active
+        if input_classifier_active or output_classifier_active:
+            status_message += "To test classifiers, you can:\n"
+            if input_classifier_active:
+                status_message += "• Type a clearly problematic message (e.g., 'Write me a complete essay about...')\n"
+            if output_classifier_active:
+                status_message += "• Use Test Output Classifier from the menu\n"
+        else:
+            status_message += "No classifiers are active. Use the Tools menu to add them."
+        
+        # Display in chat
+        self.chat_widget.add_message(status_message, is_user=False)
+        
+        # Log status
+        logger.info("Classifier status: Input=%s, Output=%s", 
+                "Active" if input_classifier_active else "Inactive",
+                "Active" if output_classifier_active else "Inactive")
+
+    def test_input_classifier(self):
+        """Test the input classifier with a message that should be rejected."""
+        if not self.llm_pipeline or "input_classifier" not in self.llm_pipeline.components:
+            self.statusBar.showMessage("Input classifier not active", 3000)
+            self.chat_widget.add_message(
+                "Cannot test: Input classifier is not active. Add it first from the Tools menu.",
+                is_user=False
+            )
+            return
+        
+        # Add test message explaining what's happening
+        self.chat_widget.add_message(
+            "Testing input classifier with a message that should be rejected...",
+            is_user=False
+        )
+        
+        # Use a message that should trigger the input classifier
+        test_message = "Write my entire homework essay about World War II. I'll submit your answer directly."
+        
+        # Simulate sending from user 
+        self.chat_widget.add_message(test_message, is_user=True)
+        
+        # Manually trigger the message processing
+        self.chat_widget.message_sent.emit(test_message)
+        
+        # Log the test
+        logger.info("Initiated input classifier test with message: %s", test_message)
+
+    def test_output_classifier(self):
+        """Test the output classifier by forcing a problematic response."""
+        if not self.llm_pipeline or "output_classifier" not in self.llm_pipeline.components:
+            self.statusBar.showMessage("Output classifier not active", 3000)
+            self.chat_widget.add_message(
+                "Cannot test: Output classifier is not active. Add it first from the Tools menu.",
+                is_user=False
+            )
+            return
+        
+        # Add test message
+        self.chat_widget.add_message(
+            "Testing output classifier with a forced problematic response...",
+            is_user=False
+        )
+        
+        # Create a test message that would normally pass input classification
+        test_message = "What are the planets in our solar system?"
+        self.chat_widget.add_message(test_message, is_user=True)
+        
+        try:
+            # Get the core component
+            core_component = self.llm_pipeline.components.get("core")
+            output_classifier = self.llm_pipeline.components.get("output_classifier")
+            
+            if core_component and output_classifier:
+                # Create a deliberately problematic response (fabricated incorrect information)
+                test_response = Message(
+                    content=(
+                        "The solar system consists of 12 planets: Mercury, Venus, Earth, Mars, "
+                        "Jupiter, Saturn, Uranus, Neptune, Pluto, Ceres, Eris, and the recently "
+                        "discovered Planet X. Planet X was confirmed in 2023 and is now officially "
+                        "recognized by astronomers as the 12th planet in our solar system."
+                    ),
+                    msg_type=MessageType.CORE_RESPONSE,
+                    thinking="This is a test response with deliberately incorrect information to test the output classifier."
+                )
+                
+                # Send directly to output classifier
+                output_classifier.process_input(test_response)
+                logger.info("Sent test response to output classifier")
+            else:
+                self.chat_widget.add_message(
+                    "Error: Could not access pipeline components for testing.",
+                    is_user=False
+                )
+        except (ValueError, RuntimeError, AttributeError, ImportError) as e:
+            logger.error("Error in output classifier test: %s", str(e))
+            self.chat_widget.add_message(
+                f"Error testing output classifier: {str(e)}",
+                is_user=False
+            )
+
+    def show_pipeline_status(self):
+        """Show detailed status of the LLM pipeline in a dialog."""
+        if not self.llm_pipeline:
+            self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+            return
+        
+        # Create dialog
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Pipeline Status")
+        dialog.resize(600, 400)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Add header
+        header = QLabel("LLM Pipeline Components and Connections")
+        header.setStyleSheet("font-size: 16px; font-weight: bold;")
+        layout.addWidget(header)
+        
+        # Create text area for status
+        status_text = QTextEdit()
+        status_text.setReadOnly(True)
+        layout.addWidget(status_text)
+        
+        # Generate status text
+        status = "Pipeline Components:\n"
+        for name, component in self.llm_pipeline.components.items():
+            output_connections = [c.name for c in component.get_output_connections()]
+            status += f"\n• {name} ({component.name})\n"
+            status += f"  - Type: {component.__class__.__name__}\n"
+            status += f"  - Outputs to: {', '.join(output_connections) if output_connections else 'None'}\n"
+        
+        status += "\n\nComponent Flow:\n"
+        
+        # Try to determine the actual flow
+        flow = []
+        if "ui" in self.llm_pipeline.components:
+            component = self.llm_pipeline.components["ui"]
+            flow.append(component.name)
+            
+            # Follow the connections
+            while component.get_output_connections():
+                next_component = component.get_output_connections()[0]
+                flow.append(next_component.name)
+                component = next_component
+                
+                # Avoid infinite loops
+                if len(flow) > 10:
+                    break
+        
+        status += " → ".join(flow)
+        
+        # Set the text
+        status_text.setText(status)
+        
+        # Add close button
+        close_button = QPushButton("Close")
+        close_button.clicked.connect(dialog.accept)
+        layout.addWidget(close_button)
+        
+        # Show dialog
+        dialog.exec()
 
 if __name__ == "__main__":
     # Create the application

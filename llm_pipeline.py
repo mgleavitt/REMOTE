@@ -8,11 +8,11 @@ import os
 from typing import Dict, Optional, Callable
 
 from llm_components import LLMComponent
-from llm_core_components import (
-    CoreLLMComponent, InputClassifierComponent, OutputClassifierComponent
-)
+from llm_core_components import CoreLLMComponent
+from llm_classifier_components import InputClassifierComponent, OutputClassifierComponent
 from llm_providers import AnthropicProvider, OpenAIProvider, LLMBaseProvider
 from llm_ui_components import ChatUIComponent, StatusManager
+from constitution_manager import ConstitutionManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +27,7 @@ class LLMPipeline:
         self.components = {}
         self.providers = {}
         self.status_manager = None
+        self.constitution_manager = None
     
     def create_status_manager(self):
         """Create and return a status manager for UI updates."""
@@ -229,15 +230,17 @@ class LLMPipeline:
             self.components.clear()
             self.providers.clear()
             raise RuntimeError(f"Failed to set up basic pipeline: {str(e)}") from e
-    
+
     def add_input_classifier(self, 
-                           provider: Optional[LLMBaseProvider] = None,
-                           system_prompt: str = "") -> Dict[str, LLMComponent]:
+                        provider: Optional[LLMBaseProvider] = None,
+                        constitution_name: str = "input-classifier",
+                        system_prompt: str = "") -> Dict[str, LLMComponent]:
         """Add an input classifier to an existing pipeline.
         
         Args:
-            provider: The LLM provider to use (uses Anthropic if None)
-            system_prompt: System prompt for the classifier
+            provider: The LLM provider to use (uses existing provider if None)
+            constitution_name: Name of the constitution file to use
+            system_prompt: Optional override for the system prompt
             
         Returns:
             Updated dictionary of components
@@ -251,10 +254,27 @@ class LLMPipeline:
             if "anthropic" in self.providers:
                 provider = self.providers["anthropic"]
             else:
+                logger.info("Creating a new Anthropic provider for input classifier")
                 provider = self.create_anthropic_provider()
         
+        # Create ConstitutionManager if not already created
+        if self.constitution_manager is None:
+            self.constitution_manager = ConstitutionManager()
+            logger.info("Created new ConstitutionManager instance")
+        
         # Create input classifier
-        input_classifier = self.create_input_classifier(provider, system_prompt)
+        input_classifier = InputClassifierComponent(
+            provider, 
+            constitution_manager=self.constitution_manager,
+            constitution_name=constitution_name
+        )
+        # Override rejection message if provided
+        input_classifier.rejection_message = "I'm sorry, Dave. I can't DO that."
+
+        # Override system prompt if provided
+        if system_prompt:
+            input_classifier.system_prompt = system_prompt
+            logger.info("Overriding input classifier system prompt")
         
         # Set status callback
         input_classifier.set_status_callback(self.status_manager.update_status)
@@ -263,25 +283,36 @@ class LLMPipeline:
         ui_component = self.components["ui"]
         core_component = self.components["core"]
         
-        # Disconnect direct UI → Core connection
-        # Note: This isn't actually needed with our implementation,
-        # as it won't cause issues to have multiple connections
+        # Remove direct connection to core if exists
+        try:
+            ui_component.disconnect_output(core_component)
+            logger.info("Removed direct UI → Core connection")
+        except ValueError:
+            pass  # Connection didn't exist, which is fine
         
-        # Connect UI → Classifier → Core
+        # Connect UI → Classifier → Core and Classifier → UI for errors
         ui_component.connect_output(input_classifier)
         input_classifier.connect_output(core_component)
+        # Store UI reference for direct error messaging
+        input_classifier.ui_component = ui_component
+        logger.info("Connected UI → InputClassifier → Core and InputClassifier → UI")
+        
+        # Add to components dictionary
+        self.components["input_classifier"] = input_classifier
         
         logger.info("Added input classifier to pipeline")
         return self.components
-    
+
     def add_output_classifier(self, 
-                           provider: Optional[LLMBaseProvider] = None,
-                           system_prompt: str = "") -> Dict[str, LLMComponent]:
+                            provider: Optional[LLMBaseProvider] = None,
+                            constitution_name: str = "output-classifier",
+                            system_prompt: str = "") -> Dict[str, LLMComponent]:
         """Add an output classifier to an existing pipeline.
         
         Args:
-            provider: The LLM provider to use (uses Anthropic if None)
-            system_prompt: System prompt for the classifier
+            provider: The LLM provider to use (uses existing provider if None)
+            constitution_name: Name of the constitution file to use
+            system_prompt: Optional override for the system prompt
             
         Returns:
             Updated dictionary of components
@@ -295,10 +326,28 @@ class LLMPipeline:
             if "anthropic" in self.providers:
                 provider = self.providers["anthropic"]
             else:
+                logger.info("Creating a new Anthropic provider for output classifier")
                 provider = self.create_anthropic_provider()
         
+        # Create ConstitutionManager if not already created
+        if self.constitution_manager is None:
+            self.constitution_manager = ConstitutionManager()
+            logger.info("Created new ConstitutionManager instance")
+        
         # Create output classifier
-        output_classifier = self.create_output_classifier(provider, system_prompt)
+        output_classifier = OutputClassifierComponent(
+            provider, 
+            constitution_manager=self.constitution_manager,
+            constitution_name=constitution_name
+        )
+        
+        # Override rejection message if provided
+        output_classifier.rejection_message = "I'm sorry, Dave. I can't SAY that."
+
+        # Override system prompt if provided
+        if system_prompt:
+            output_classifier.system_prompt = system_prompt
+            logger.info("Overriding output classifier system prompt")
         
         # Set status callback
         output_classifier.set_status_callback(self.status_manager.update_status)
@@ -307,13 +356,20 @@ class LLMPipeline:
         ui_component = self.components["ui"]
         core_component = self.components["core"]
         
-        # Disconnect direct Core → UI connection
-        # Note: This isn't actually needed with our implementation,
-        # as it won't cause issues to have multiple connections
+        # Remove direct connection to UI if exists
+        try:
+            core_component.disconnect_output(ui_component)
+            logger.info("Removed direct Core → UI connection")
+        except ValueError:
+            pass  # Connection didn't exist, which is fine
         
         # Connect Core → Classifier → UI
         core_component.connect_output(output_classifier)
         output_classifier.connect_output(ui_component)
+        logger.info("Connected Core → OutputClassifier → UI")
+        
+        # Add to components dictionary
+        self.components["output_classifier"] = output_classifier
         
         logger.info("Added output classifier to pipeline")
         return self.components

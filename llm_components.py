@@ -86,6 +86,14 @@ class LLMComponent(ABC):
         if self._status_callback:
             self._status_callback(f"[{self.name}] {status_msg}")
     
+    def get_output_connections(self) -> List['LLMComponent']:
+        """Get list of components connected to this component's output.
+        
+        Returns:
+            List of connected components
+        """
+        return self._output_connections.copy()
+    
     def send_output(self, message: Message) -> None:
         """Send output message to all connected components."""
         for component in self._output_connections:

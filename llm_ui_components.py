@@ -54,21 +54,15 @@ class ChatUIComponent(LLMComponent):
         self.send_output(message)
     
     def process_input(self, message: Message) -> None:
-        """Process an input message by displaying it in the chat.
-        
-        This method handles different message types and displays them appropriately
-        in the chat widget, including thinking content when available.
-        
-        Args:
-            message: The message to process
-        """
+        """Process an input message by displaying it in the chat."""
         if message.type == MessageType.STATUS_UPDATE:
             if self._status_callback:
                 self._status_callback(message.content)
                 
         elif message.type == MessageType.ERROR:
             logger.error("Error: %s", message.content)
-            self.chat_widget.add_message(f"Error: {message.content}", is_user=False)
+            # Display error message without "Error:" prefix
+            self.chat_widget.add_message(message.content, is_user=False, thinking=message.thinking)
             
         elif message.type in [MessageType.CORE_RESPONSE, MessageType.VALIDATED_OUTPUT]:
             logger.info("LLM response: %s", message.content[:50])
@@ -78,13 +72,17 @@ class ChatUIComponent(LLMComponent):
             if thinking:
                 logger.info("Response includes thinking (%d chars)", len(thinking))
             
-            # Add message to chat widget with thinking content (if available)
+            # Add message to chat widget
             self.chat_widget.add_message(
                 message.content, 
                 is_user=False,
                 thinking=thinking
             )
-
+        
+        # Explicitly ignore VALIDATED_INPUT messages
+        elif message.type == MessageType.VALIDATED_INPUT:
+            logger.info("UI ignoring VALIDATED_INPUT message")
+            return
 
 class StatusManager(QObject):
     """Manager for displaying status updates in the UI."""
