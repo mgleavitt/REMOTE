@@ -251,17 +251,20 @@ class MainWindow(QMainWindow):
         """
         if self.statusBar:
             self.statusBar.showMessage(status, 5000)  # Show for 5 seconds
+            QApplication.processEvents()
     
     def add_input_classifier(self):
         """Add the input classifier to the LLM pipeline."""
         try:
             if not self.llm_pipeline:
                 self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+                QApplication.processEvents()
                 return
             
             # Check if classifier already exists
             if "input_classifier" in self.llm_pipeline.components:
                 self.statusBar.showMessage("Input classifier already added to pipeline", 3000)
+                QApplication.processEvents()
                 return
             
             # Add classifier to pipeline
@@ -269,10 +272,13 @@ class MainWindow(QMainWindow):
                 constitution_name="input-classifier"
             )
             self.statusBar.showMessage("Input classifier added to pipeline", 3000)
-            
+            QApplication.processEvents()
+
         except (ValueError, RuntimeError, ImportError) as e:
             error_msg = f"Error adding input classifier: {str(e)}"
             self.statusBar.showMessage(error_msg, 5000)
+            QApplication.processEvents()
+
             logger.error(error_msg)
             
     def add_output_classifier(self):
@@ -280,11 +286,13 @@ class MainWindow(QMainWindow):
         try:
             if not self.llm_pipeline:
                 self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+                QApplication.processEvents()
                 return
             
             # Check if classifier already exists
             if "output_classifier" in self.llm_pipeline.components:
                 self.statusBar.showMessage("Output classifier already added to pipeline", 3000)
+                QApplication.processEvents()
                 return
             
             # Add classifier to pipeline
@@ -292,10 +300,12 @@ class MainWindow(QMainWindow):
                 constitution_name="output-classifier"
             )
             self.statusBar.showMessage("Output classifier added to pipeline", 3000)
-            
+            QApplication.processEvents()
+
         except (ValueError, RuntimeError, ImportError) as e:
             error_msg = f"Error adding output classifier: {str(e)}"
             self.statusBar.showMessage(error_msg, 5000)
+            QApplication.processEvents()
             logger.error(error_msg)            
     
     def add_sample_chat_messages(self):
@@ -352,10 +362,10 @@ class MainWindow(QMainWindow):
                 )
                 logger.error(error_msg)
                 self.statusBar.showMessage(error_msg, 10000)  # 10 seconds
+                QApplication.processEvents()
                 
                 # Fall back to test mode
                 logger.info("Falling back to test mode due to missing API key")
-                self.setup_test_llm_integration()
                 return
             
             # Create LLM pipeline
@@ -400,12 +410,13 @@ class MainWindow(QMainWindow):
                 
                 logger.info("LLM integration setup complete with conversation history")
                 self.statusBar.showMessage("LLM integration active with conversation history", 3000)
-                
+                QApplication.processEvents()
+
             except (ValueError, RuntimeError, ImportError, ConnectionError) as e:
                 logger.error("Failed to set up real LLM integration: %s", str(e))
                 logger.error(traceback.format_exc())
                 self.statusBar.showMessage(f"Error: {str(e)}", 10000)
-                
+                QApplication.processEvents()
                 # Fall back to test mode
                 logger.info("Falling back to test mode due to exception")
                 self.setup_test_llm_integration()
@@ -414,7 +425,8 @@ class MainWindow(QMainWindow):
             logger.error("Error in LLM integration setup: %s", str(e))
             logger.error(traceback.format_exc())
             self.statusBar.showMessage(f"Error setting up LLM integration: {str(e)}", 10000)
-            
+            QApplication.processEvents()
+
             # Add error message to chat for visibility
             self.chat_widget.add_message(
                 f"Error setting up LLM integration: {str(e)}",
@@ -495,6 +507,7 @@ class MainWindow(QMainWindow):
                 "Cannot verify classifiers: LLM pipeline not initialized.",
                 is_user=False
             )
+            QApplication.processEvents()
             return
         
         # Check for classifiers in pipeline
@@ -532,6 +545,7 @@ class MainWindow(QMainWindow):
                 "Cannot test: Input classifier is not active. Add it first from the Tools menu.",
                 is_user=False
             )
+            QApplication.processEvents()
             return
         
         # Add test message explaining what's happening
@@ -560,6 +574,7 @@ class MainWindow(QMainWindow):
                 "Cannot test: Output classifier is not active. Add it first from the Tools menu.",
                 is_user=False
             )
+            QApplication.processEvents()
             return
         
         # Add test message
@@ -609,6 +624,7 @@ class MainWindow(QMainWindow):
         """Show detailed status of the LLM pipeline in a dialog."""
         if not self.llm_pipeline:
             self.statusBar.showMessage("LLM pipeline not initialized", 3000)
+            QApplication.processEvents()
             return
         
         # Create dialog
