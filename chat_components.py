@@ -5,10 +5,10 @@ Chat-related UI components for REMOTE application.
 
 import logging
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel, 
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel, 
     QLineEdit, QPushButton, QScrollArea
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -127,13 +127,28 @@ class ChatWidget(QWidget):
         logger.info("Initializing ChatWidget")
         
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(8, 8, 8, 8)  # Added margins for better appearance
+        self.layout.setSpacing(6)  # Increased spacing
         
-        # Chat header
+        # Chat header with improved styling
+        header_container = QWidget()
+        header_container.setProperty("class", "chat-header-container")
+        header_layout = QHBoxLayout(header_container)
+        header_layout.setContentsMargins(4, 4, 4, 4)
+        
         self.header = QLabel("Chat")
         self.header.setProperty("class", "chat-header")
-        self.layout.addWidget(self.header)
+        header_layout.addWidget(self.header)
+        header_layout.addStretch()
+        
+        self.layout.addWidget(header_container)
+        
+        # Add a separator line
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setProperty("class", "separator")
+        self.layout.addWidget(separator)
         
         # Scroll area for messages
         self.scroll_area = QScrollArea()
@@ -142,6 +157,16 @@ class ChatWidget(QWidget):
         self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         
+        ################################################################
+        ########### Claude's Suggested Splitter Improvements ###########
+        ################################################################
+        self.messages_container = QWidget()
+        self.messages_layout = QVBoxLayout(self.messages_container)
+        self.messages_layout.setContentsMargins(0, 0, 0, 0)
+        self.messages_layout.setSpacing(1)  # Reduced from default to 2 pixels
+        self.messages_layout.addStretch()
+        ################################################################
+
         # Container for messages
         self.messages_container = QWidget()
         self.messages_layout = QVBoxLayout(self.messages_container)
@@ -151,24 +176,31 @@ class ChatWidget(QWidget):
         self.scroll_area.setWidget(self.messages_container)
         self.layout.addWidget(self.scroll_area)
         
-        # Input area
-        self.input_layout = QHBoxLayout()
+        # Input area with improved styling
+        input_container = QWidget()
+        input_container.setProperty("class", "chat-input-container")
+        self.input_layout = QHBoxLayout(input_container)
+        self.input_layout.setContentsMargins(4, 8, 4, 4)
+        self.input_layout.setSpacing(8)
+        
         self.chat_input = QLineEdit()
         self.chat_input.setPlaceholderText("Type your message...")
         self.chat_input.setProperty("class", "chat-input")
         self.chat_input.returnPressed.connect(self.send_message)
         self.chat_input.setToolTip("Type your message here")
+        self.chat_input.setMinimumHeight(32)  # Taller input field
 
         self.send_button = QPushButton("Send")
         self.send_button.setCursor(Qt.PointingHandCursor)
         self.send_button.clicked.connect(self.send_message)
         self.send_button.setToolTip("Send message")
         self.send_button.setProperty("class", "send-button")
+        self.send_button.setMinimumHeight(32)  # Match input height
 
         self.input_layout.addWidget(self.chat_input)
         self.input_layout.addWidget(self.send_button)
         
-        self.layout.addLayout(self.input_layout)
+        self.layout.addWidget(input_container)
         logger.info("ChatWidget initialization complete")
     
     def add_message(self, text, is_user=False, thinking=None):
@@ -186,7 +218,7 @@ class ChatWidget(QWidget):
         # Remove the stretch if it exists
         if self.messages_layout.count() > 0:
             stretch_item = self.messages_layout.itemAt(self.messages_layout.count() - 1)
-            if stretch_item.spacerItem():
+            if stretch_item and stretch_item.spacerItem():
                 self.messages_layout.removeItem(stretch_item)
         
         # Add the new message
@@ -196,10 +228,14 @@ class ChatWidget(QWidget):
         # Add stretch back
         self.messages_layout.addStretch()
         
-        # Scroll to the bottom
-        self.scroll_area.verticalScrollBar().setValue(
-            self.scroll_area.verticalScrollBar().maximum()
-        )
+        # Force layout update
+        self.messages_container.updateGeometry()
+        self.messages_layout.update()
+        QApplication.processEvents()
+        
+        # Use a timer to scroll to the bottom *after* the layout has updated
+        QTimer.singleShot(50, self._scroll_to_bottom)
+        
         logger.info("Message added successfully")
     
     def send_message(self):
@@ -215,3 +251,9 @@ class ChatWidget(QWidget):
             logger.info("Emitting message_sent signal")
             self.message_sent.emit(text)
             logger.info("Signal emitted successfully")
+
+    def _scroll_to_bottom(self):
+        """Scroll to the bottom of the chat area."""
+        if self.scroll_area and self.scroll_area.verticalScrollBar():
+            scrollbar = self.scroll_area.verticalScrollBar()
+            scrollbar.setValue(scrollbar.maximum())

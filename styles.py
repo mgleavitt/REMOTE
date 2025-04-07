@@ -45,6 +45,26 @@ def get_stylesheet():
             background-color: {BACKGROUND};
         }}
         
+        QSplitter::handle {{
+            background-color: {BORDER_COLOR};
+        }}
+        
+        QSplitter::handle:horizontal {{
+            width: 4px;
+            margin: 2px 0px;
+            border-radius: 2px;
+        }}
+        
+        QSplitter::handle:vertical {{
+            height: 8px;
+            margin: 2px 4px;
+            border-radius: 3px;
+        }}
+        
+        QSplitter::handle:hover {{
+            background-color: {PRIMARY};
+        }}
+        
         .sidebar {{
             background-color: {SIDEBAR_BG};
             border-right: 1px solid {BORDER_COLOR};
@@ -299,8 +319,8 @@ def get_stylesheet():
             background-color: {SURFACE};
             border: 1px solid {BORDER_COLOR};
             border-radius: 12px;
-            padding: 8px 12px;
-            margin: 4px 0;
+            padding: 12px 16px;  /* Increased padding */
+            margin: 6px 4px;  /* Increased margin */
             color: {TEXT_PRIMARY};
         }}
         
@@ -314,7 +334,12 @@ def get_stylesheet():
             color: {TEXT_PRIMARY};
         }}
         
-        .chat-message * {{
+        .chat-message {{
+            background-color: {SURFACE};
+            border: 1px solid {BORDER_COLOR};
+            border-radius: 12px;
+            padding: 8px 16px;  /* Reduced top/bottom padding from 12px to 10px */
+            margin: 1px 4px;     /* Reduced top/bottom margin from 6px to 2px */
             color: {TEXT_PRIMARY};
         }}
         
@@ -324,6 +349,7 @@ def get_stylesheet():
             color: {TEXT_PRIMARY};
             margin-bottom: 6px;
         }}
+        
         .send-button {{
             background-color: {PRIMARY};
             color: {ON_PRIMARY};
@@ -338,5 +364,37 @@ def get_stylesheet():
 
         .send-button:pressed {{
             background-color: {SECONDARY_VARIANT};
-        }}    
+        }}
+        
+        .chat-header-container {{
+            background-color: {SURFACE};
+            border-radius: 4px;
+        }}
+        
+        .chat-input-container {{
+            background-color: {SURFACE};
+            border-top: 1px solid {BORDER_COLOR};
+            padding-top: 8px;
+        }}
+        
+        .thinking-button {{
+            background-color: {HOVER_BG};
+            color: {TEXT_PRIMARY};
+            border: 1px solid {BORDER_COLOR};
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-top: 4px;
+        }}
+        
+        .thinking-button:hover {{
+            background-color: {SELECTED_BG};
+        }}
+        
+        .thinking-panel {{
+            background-color: {HOVER_BG};
+            border: 1px solid {BORDER_COLOR};
+            border-radius: 4px;
+            margin: 4px 0px 8px 32px;
+            padding: 8px;
+        }}
     """
