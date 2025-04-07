@@ -21,7 +21,7 @@ class InputClassifierComponent(LLMComponent):
     
     def __init__(self, llm_provider: LLMBaseProvider, 
                 constitution_manager: Optional[ConstitutionManager] = None,
-                constitution_name: str = "input-classifier", 
+                constitution_name: str = "input-classifier-constitution", 
                 name: str = "InputClassifier"):
         """Initialize the input classifier component.
         
@@ -178,7 +178,7 @@ class OutputClassifierComponent(LLMComponent):
     
     def __init__(self, llm_provider: LLMBaseProvider, 
                 constitution_manager: Optional[ConstitutionManager] = None,
-                constitution_name: str = "output-classifier", 
+                constitution_name: str = "output-classifier-constitution", 
                 name: str = "OutputClassifier"):
         """Initialize the output classifier component.
         

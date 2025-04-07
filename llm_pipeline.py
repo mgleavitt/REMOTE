@@ -270,7 +270,7 @@ class LLMPipeline:
 
     def add_input_classifier(self, 
                         provider: Optional[LLMBaseProvider] = None,
-                        constitution_name: str = "input-classifier",
+                        constitution_name: str = "input-classifier-constitution",
                         system_prompt: str = "") -> Dict[str, LLMComponent]:
         """Add an input classifier to an existing pipeline.
         

@@ -269,7 +269,7 @@ class MainWindow(QMainWindow):
             
             # Add classifier to pipeline
             self.llm_pipeline.add_input_classifier(
-                constitution_name="input-classifier"
+                constitution_name="input-classifier-constitution"
             )
             self.statusBar.showMessage("Input classifier added to pipeline", 3000)
             QApplication.processEvents()
@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
             error_msg = f"Error adding input classifier: {str(e)}"
             self.statusBar.showMessage(error_msg, 5000)
             QApplication.processEvents()
-
+            
             logger.error(error_msg)
             
     def add_output_classifier(self):
@@ -297,7 +297,7 @@ class MainWindow(QMainWindow):
             
             # Add classifier to pipeline
             self.llm_pipeline.add_output_classifier(
-                constitution_name="output-classifier"
+                constitution_name="output-classifier-constitution"
             )
             self.statusBar.showMessage("Output classifier added to pipeline", 3000)
             QApplication.processEvents()
@@ -306,7 +306,7 @@ class MainWindow(QMainWindow):
             error_msg = f"Error adding output classifier: {str(e)}"
             self.statusBar.showMessage(error_msg, 5000)
             QApplication.processEvents()
-            logger.error(error_msg)            
+            logger.error(error_msg)
     
     def add_sample_chat_messages(self):
         """Add sample messages to the chat."""
@@ -394,6 +394,14 @@ class MainWindow(QMainWindow):
                     max_history_turns=20  # Keep 20 conversation turns
                 )
                 
+                # Automatically add input and output classifiers
+                self.llm_pipeline.add_input_classifier(
+                    constitution_name="input-classifier-constitution"
+                )
+                self.llm_pipeline.add_output_classifier(
+                    constitution_name="output-classifier-constitution"
+                )
+                
                 # Connect course filter changes to update context
                 self.sidebar.connect_course_context_change(self.update_course_context)
                 
@@ -404,12 +412,12 @@ class MainWindow(QMainWindow):
                 
                 # Add a message to the chat
                 self.chat_widget.add_message(
-                    "LLM integration active with conversation history. Type a message to chat with Claude.",
+                    "LLM integration active with conversation history and automatic input/output validation. Type a message to chat with Claude.",
                     is_user=False
                 )
                 
-                logger.info("LLM integration setup complete with conversation history")
-                self.statusBar.showMessage("LLM integration active with conversation history", 3000)
+                logger.info("LLM integration setup complete with conversation history and automatic validation")
+                self.statusBar.showMessage("LLM integration active with conversation history and automatic validation", 3000)
                 QApplication.processEvents()
 
             except (ValueError, RuntimeError, ImportError, ConnectionError) as e:
@@ -462,17 +470,7 @@ class MainWindow(QMainWindow):
         # Add Tools menu
         tools_menu = menu_bar.addMenu("Tools")
         
-        # Add LLM management actions
-        add_input_classifier_action = QAction("Add Input Classifier", self)
-        add_input_classifier_action.triggered.connect(self.add_input_classifier)
-        tools_menu.addAction(add_input_classifier_action)
-        
-        add_output_classifier_action = QAction("Add Output Classifier", self)
-        add_output_classifier_action.triggered.connect(self.add_output_classifier)
-        tools_menu.addAction(add_output_classifier_action)
-        
-        # Add separator and verification submenu
-        tools_menu.addSeparator()
+        # Add verification submenu
         self.setup_verification_menu(tools_menu)
         
         logger.info("Menu system initialized")
@@ -527,7 +525,7 @@ class MainWindow(QMainWindow):
             if output_classifier_active:
                 status_message += "• Use Test Output Classifier from the menu\n"
         else:
-            status_message += "No classifiers are active. Use the Tools menu to add them."
+            status_message += "Error: Classifiers should be automatically active. Please restart the application."
         
         # Display in chat
         self.chat_widget.add_message(status_message, is_user=False)
