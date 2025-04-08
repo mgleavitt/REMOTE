@@ -41,7 +41,7 @@ class Sidebar(QWidget):
         # Add some default classes
         self.add_class("Database Management Systems", True)
         self.add_class("Human-Centered Artificial Intelligence", True)
-        self.add_class("Data Science", True)
+        self.add_class("Data Science", False)
         
         layout.addWidget(self.classes_container)
         
