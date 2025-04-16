@@ -1,0 +1,3654 @@
+[
+  {
+    "message_id": "slack_msg_1",
+    "source_type": "slack",
+    "timestamp": "2025-01-08T00:00:00Z",
+    "date_formatted": "Jan 8",
+    "sender": {
+      "name": "Lori Kinley",
+      "slack_id": "U_LORI_KINLEY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel creation",
+    "content": "created this channel on January 8th. This is the very beginning of the cpsc6620-spring-2025 channel. Database Management Systems (Edit description)",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_2",
+    "source_type": "slack",
+    "timestamp": "2025-01-08T12:23:00Z",
+    "date_formatted": "Jan 8",
+    "sender": {
+      "name": "Lori Kinley",
+      "slack_id": "U_LORI_KINLEY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel join notification",
+    "content": "joined cpsc6620-spring-2025. Also, Amy Graff and 8 others joined via invite.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_AMY_GRAFF"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_3",
+    "source_type": "slack",
+    "timestamp": "2025-01-08T18:02:00Z",
+    "date_formatted": "Jan 8",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel description update",
+    "content": "set the channel description: Database Management Systems",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_4",
+    "source_type": "slack",
+    "timestamp": "2025-01-09T05:56:00Z",
+    "date_formatted": "Jan 9",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel join notification",
+    "content": "was added to cpsc6620-spring-2025 by John Kappler. Also, Connie Taylor and Diego joined via invite.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_JOHN_KAPPLER",
+        "U_CONNIE_TAYLOR",
+        "U_DIEGO"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_5",
+    "source_type": "slack",
+    "timestamp": "2025-01-09T10:42:00Z",
+    "date_formatted": "Jan 9",
+    "sender": {
+      "name": "Lee Sander",
+      "slack_id": "U_LEE_SANDER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Textbook question",
+    "content": "For the textbook is version 12 or 13 okay? I looked to buy version 14 but it won't be here until like end of Feb. version 12 appears to be open source and available via internet archive",
+    "thread_id": "thread_textbook_question",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 1,
+      "last_reply_time": "3 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_5_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-01-09T10:56:00Z",
+    "date_formatted": "Jan 9",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Textbook question",
+    "content": "I'd ask via the discussion forum or email, since I'm not sure the professor and/or TAs are here",
+    "thread_id": "thread_textbook_question",
+    "parent_message_id": "slack_msg_5",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_6",
+    "source_type": "slack",
+    "timestamp": "2025-01-09T12:27:00Z",
+    "date_formatted": "Jan 9",
+    "sender": {
+      "name": "Gokul",
+      "slack_id": "U_GOKUL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Textbook link",
+    "content": "I was thinking about renting this https://www.cengage.com/c/etextbook-database-systems-design-implementation--management-14th-edition/9780357673102/?searchIsbn=9780357673102",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_LEE_SANDER"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_7",
+    "source_type": "slack",
+    "timestamp": "2025-01-10T08:28:00Z",
+    "date_formatted": "Jan 10",
+    "sender": {
+      "name": "Connie Taylor",
+      "slack_id": "U_CONNIE_TAYLOR"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Textbook edition",
+    "content": "Hi all - The 14th edition does have a few updates but the older version is probably adequate.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_8",
+    "source_type": "slack",
+    "timestamp": "2025-01-10T08:28:00Z",
+    "date_formatted": "Jan 10",
+    "sender": {
+      "name": "Connie Taylor",
+      "slack_id": "U_CONNIE_TAYLOR"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Welcome message",
+    "content": "Welcome to the class everyone!",
+    "thread_id": "thread_welcome",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": [],
+      "pinned": true,
+      "pinned_by": "U_CONNIE_TAYLOR",
+      "thread_reply_count": 2,
+      "last_reply_time": "3 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_8_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T07:02:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Welcome message",
+    "content": "Hi Professor Taylor. I see you have office hours tomorrow at 11 as posted on Coursera. There is not a link posted for the sessions.",
+    "thread_id": "thread_welcome",
+    "parent_message_id": "slack_msg_8",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_8_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T09:00:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Welcome message",
+    "content": "We got the link via email today, so we should be set.",
+    "thread_id": "thread_welcome",
+    "parent_message_id": "slack_msg_8",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_9",
+    "source_type": "slack",
+    "timestamp": "2025-01-11T08:06:00Z",
+    "date_formatted": "Jan 11",
+    "sender": {
+      "name": "Lee Sander",
+      "slack_id": "U_LEE_SANDER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Applications question",
+    "content": "Do we need to have anything setup to complete the applications? looks like they are timed not really sure what to expect here.",
+    "thread_id": "thread_applications",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": [],
+      "thread_reply_count": 3,
+      "last_reply_time": "3 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_9_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-01-11T08:06:00Z",
+    "date_formatted": "Jan 11",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Applications question",
+    "content": "The practice ones were just questions.",
+    "thread_id": "thread_applications",
+    "parent_message_id": "slack_msg_9",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_9_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-01-11T13:10:00Z",
+    "date_formatted": "Jan 11",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Applications question",
+    "content": "This first module is all just questions\n\nSo the standard Coursera quiz layout",
+    "thread_id": "thread_applications",
+    "parent_message_id": "slack_msg_9",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_10",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T12:57:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Alec Mandell",
+      "slack_id": "U_ALEC_MANDELL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel join notification",
+    "content": "was added to cpsc6620-spring-2025 by John Kappler.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_JOHN_KAPPLER"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_11",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T14:33:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Quiz answers",
+    "content": "Anyone else finding some of the \"correct\" answers to the 1st quiz, ummm... \"interesting\"?",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_12",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T14:48:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Wrong channel",
+    "content": "Sorry, wrong channel. 😁",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_13",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T14:51:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Practice exercise question",
+    "content": "That said, I am confused by the question in Module 1 Practice Exercises (Part 2): \"Question 1\nGiven the file structure shown below, what problem(s) might you encounter if building KOM were deleted?\"—what is \"building KOM\"?",
+    "thread_id": "thread_practice_exercise",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 4,
+      "last_reply_time": "3 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_13_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T14:53:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Diego",
+      "slack_id": "U_DIEGO"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Practice exercise question",
+    "content": "Building KOM is in reference to the other diagram in the practice problems in chapter 1 of the textbook. The diagram shown on the practice problem is incorrect",
+    "thread_id": "thread_practice_exercise",
+    "parent_message_id": "slack_msg_13",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_13_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T14:56:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Practice exercise question",
+    "content": "I asked that question in the forum. I guessed it was for another diagram as @Diego stated.",
+    "thread_id": "thread_practice_exercise",
+    "parent_message_id": "slack_msg_13",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_DIEGO"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_13_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T15:04:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Practice exercise question",
+    "content": "Thanks @Diego and @Amy Graff!",
+    "thread_id": "thread_practice_exercise",
+    "parent_message_id": "slack_msg_13",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_DIEGO",
+        "U_AMY_GRAFF"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_13_reply_4",
+    "source_type": "slack",
+    "timestamp": "2025-01-12T17:31:00Z",
+    "date_formatted": "Jan 12",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Practice exercise question",
+    "content": "It's for a different diagram. I figured it was about deletion anomalies and just answered accordingly",
+    "thread_id": "thread_practice_exercise",
+    "parent_message_id": "slack_msg_13",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_14",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T06:41:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Office hours recording request",
+    "content": "I see the first Office Hours are today at 11am. If anyone is able to attend you could you please ask that the zoom session is recorded please? That was very helpful last term in 8400.",
+    "thread_id": "thread_office_hours",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 12,
+      "last_reply_time": "3 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_14_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T06:52:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Office hours recording request",
+    "content": "Hey, Jeremy, where did you see these office hours posted? I see the prof has hours tomorrow, but I am assuming I missed a note on TA hours for today.",
+    "thread_id": "thread_office_hours",
+    "parent_message_id": "slack_msg_14",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_14_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T07:39:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Office hours recording request",
+    "content": "According to the course calendar in Coursera, it does not appear that any of the TA live events have been added (yet).",
+    "thread_id": "thread_office_hours",
+    "parent_message_id": "slack_msg_14",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_14_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T07:45:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Office hours recording request",
+    "content": "[image.png]\n\nIt is on my Coursera calendar\n\nand when you click the link it is the zoom invite",
+    "thread_id": "thread_office_hours",
+    "parent_message_id": "slack_msg_14",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": true,
+      "attachments": [
+        {
+          "filename": "image.png",
+          "url": "",
+          "size": 0
+        }
+      ],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_14_reply_4",
+    "source_type": "slack",
+    "timestamp": "2025-01-13T07:46:00Z",
+    "date_formatted": "Jan 13",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Office hours recording request",
+    "content": "Yeah but the 14th is tomorrow.",
+    "thread_id": "thread_office_hours",
+    "parent_message_id": "slack_msg_14",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_16",
+    "source_type": "slack",
+    "timestamp": "2025-02-04T16:49:00Z",
+    "date_formatted": "Feb 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Module 4 Application question",
+    "content": "Has anyone done \"Module 4 Application (Part 3)\"? 'Cause either I really don't understand this nearly as well as I thought I did (which, let's be honest, is always a possibility) or something's not quite right.",
+    "thread_id": "thread_module4_application",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 3,
+      "last_reply_time": "2 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_16_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-04T16:52:00Z",
+    "date_formatted": "Feb 4",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 4 Application question",
+    "content": "I have completed it. What's up?",
+    "thread_id": "thread_module4_application",
+    "parent_message_id": "slack_msg_16",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_16_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-02-04T16:54:00Z",
+    "date_formatted": "Feb 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 4 Application question",
+    "content": "I don't think I can explain without sharing (attempted) answers. I'll see if I can get clarity in TA office hours tomorrow\n\nThanks, tho!",
+    "thread_id": "thread_module4_application",
+    "parent_message_id": "slack_msg_16",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_16_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-02-05T14:14:00Z",
+    "date_formatted": "Feb 5",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 4 Application question",
+    "content": "Okay, I've managed to \"pull my head out\" 😉",
+    "thread_id": "thread_module4_application",
+    "parent_message_id": "slack_msg_16",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_17",
+    "source_type": "slack",
+    "timestamp": "2025-02-06T10:45:00Z",
+    "date_formatted": "Feb 6",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel join notification",
+    "content": "was added to cpsc6620-spring-2025 by John Kappler.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_JOHN_KAPPLER"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_18",
+    "source_type": "slack",
+    "timestamp": "2025-02-15T07:45:00Z",
+    "date_formatted": "Feb 15",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "MySQL build script question",
+    "content": "Has anyone installed MySQL and run the DB build script, yet? The script I am seeing in the module in not a build script. It looks more like sample SQL to follow along with in class. I am not seeing where to download the build script.",
+    "thread_id": "thread_mysql_build_script",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 3,
+      "last_reply_time": "2 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_18_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-17T04:57:00Z",
+    "date_formatted": "Feb 17",
+    "sender": {
+      "name": "Mike Fleming",
+      "slack_id": "U_MIKE_FLEMING"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: MySQL build script question",
+    "content": "That's what I'm seeing as well",
+    "thread_id": "thread_mysql_build_script",
+    "parent_message_id": "slack_msg_18",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_18_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-02-17T08:59:00Z",
+    "date_formatted": "Feb 17",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: MySQL build script question",
+    "content": "Wow, looked for quite a while this weekend .... they are buried in the downloads of the \"Setting Up Your Local Environment\" video.",
+    "thread_id": "thread_mysql_build_script",
+    "parent_message_id": "slack_msg_18",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_18_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-02-23T09:44:00Z",
+    "date_formatted": "Feb 23",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: MySQL build script question",
+    "content": "thank you for sharing",
+    "thread_id": "thread_mysql_build_script",
+    "parent_message_id": "slack_msg_18",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_19",
+    "source_type": "slack",
+    "timestamp": "2025-02-15T08:01:00Z",
+    "date_formatted": "Feb 15",
+    "sender": {
+      "name": "Jack Espach",
+      "slack_id": "U_JACK_ESPACH"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Channel join notification",
+    "content": "was added to cpsc6620-spring-2025 by John Kappler.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_JOHN_KAPPLER"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_20",
+    "source_type": "slack",
+    "timestamp": "2025-02-19T15:11:00Z",
+    "date_formatted": "Feb 19",
+    "sender": {
+      "name": "Lee Sander",
+      "slack_id": "U_LEE_SANDER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Quiz/assignment difficulty",
+    "content": "anyone else have a difficult time with the quizes and assignments because you have to scroll between the diagrams the text and the questions? Seems to be causing me lots of problems. I am a bit worried its going to be the same way for the exam",
+    "thread_id": "thread_quiz_difficulty",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 5,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_20_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-19T16:44:00Z",
+    "date_formatted": "Feb 19",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Quiz/assignment difficulty",
+    "content": "It hasn't been a problem for me, but it's definitely annoying",
+    "thread_id": "thread_quiz_difficulty",
+    "parent_message_id": "slack_msg_20",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_20_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-02-19T19:01:00Z",
+    "date_formatted": "Feb 19",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Quiz/assignment difficulty",
+    "content": "I've just been scrolling down, seeing what the questions ask, scrolling back up to the diagram, writing my answers on a piece of paper, and then inputting my answers when I'm done",
+    "thread_id": "thread_quiz_difficulty",
+    "parent_message_id": "slack_msg_20",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_20_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-02-19T19:02:00Z",
+    "date_formatted": "Feb 19",
+    "sender": {
+      "name": "Lee Sander",
+      "slack_id": "U_LEE_SANDER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Quiz/assignment difficulty",
+    "content": "its very easy to make mistakes I feel. easily mix up things when scrolling. also takes a long time because its not right in front of you.",
+    "thread_id": "thread_quiz_difficulty",
+    "parent_message_id": "slack_msg_20",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_20_reply_4",
+    "source_type": "slack",
+    "timestamp": "2025-02-22T07:58:00Z",
+    "date_formatted": "Feb 22",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Quiz/assignment difficulty",
+    "content": "agree! This part looks like it was copy pasted from a blackboard course circa 2007.",
+    "thread_id": "thread_quiz_difficulty",
+    "parent_message_id": "slack_msg_20",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_20_reply_5",
+    "source_type": "slack",
+    "timestamp": "2025-03-03T12:43:00Z",
+    "date_formatted": "Mar 3",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Quiz/assignment difficulty",
+    "content": "On @Lee Sander's original complaint, I just started taking a screenshot of the diagram and keeping it where I can see it while working on the questions\n\nFWIW",
+    "thread_id": "thread_quiz_difficulty",
+    "parent_message_id": "slack_msg_20",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_LEE_SANDER"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_21",
+    "source_type": "slack",
+    "timestamp": "2025-02-20T19:02:00Z",
+    "date_formatted": "Feb 20",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Module 6 Practice Exercises question",
+    "content": "Speaking of trouble with the assignments, I'm confused by the description of the exercise in \"Module 6 Practice Exercises (Part 1)\"—the instructions ask students to \"write the relational schema and draw the dependency diagram\" but then asks students to \"Submit your ERD...\"\n\nSo... should the link be to a Crow's Foot-type ERD (which seems a little silly for the 1st exercise), a dependency diagram as presented in the textbook and lecture, a text description (e.g., (ITEM_ID) -> ITEM_LABEL, ROOM_NUMBER, etc? All of the above? None of the above?\n\nI'm probably overthinking this, but a little clarification would be much appreciated!",
+    "thread_id": "thread_module6_practice",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 5,
+      "last_reply_time": "2 months ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_22",
+    "source_type": "slack",
+    "timestamp": "2025-02-23T14:39:00Z",
+    "date_formatted": "Feb 23",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Mid-term exam rescheduled",
+    "content": "@Connie Taylor thank you for the mid term exam reschedule! You are the best",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_CONNIE_TAYLOR"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_23",
+    "source_type": "slack",
+    "timestamp": "2025-02-25T00:50:00Z",
+    "date_formatted": "Feb 25",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "nvm",
+    "content": "nvm.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "grinning",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": [],
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_24",
+    "source_type": "slack",
+    "timestamp": "2025-02-25T15:20:00Z",
+    "date_formatted": "Feb 25",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Midterm scope",
+    "content": "Does anyone know the scope of the (not-rescheduled 😉) midterm?\n\nMost significantly, does it include \"Module 7\" (aka \"Module 9\", and don't even get me started on that little piece of confusion 🙄)?",
+    "thread_id": "thread_midterm_scope",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 2,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_24_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-25T15:24:00Z",
+    "date_formatted": "Feb 25",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Midterm scope",
+    "content": "It does not include chapter 7 - SQL. (Certainly could include any SQL presented in previous chapters.) That was sent in an email. I can forward if you want it as reference.",
+    "thread_id": "thread_midterm_scope",
+    "parent_message_id": "slack_msg_24",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_24_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-02-25T15:25:00Z",
+    "date_formatted": "Feb 25",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Midterm scope",
+    "content": "Thanks John\n\nYes, please forward as I definitely somehow missed that 🤔",
+    "thread_id": "thread_midterm_scope",
+    "parent_message_id": "slack_msg_24",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_25",
+    "source_type": "slack",
+    "timestamp": "2025-02-25T22:08:00Z",
+    "date_formatted": "Feb 25",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Midterm date",
+    "content": "Was about to say, I thought the midterm was rescheduled, but looks like it's still due Thursday",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_26",
+    "source_type": "slack",
+    "timestamp": "2025-02-26T06:44:00Z",
+    "date_formatted": "Feb 26",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Midterm deadline",
+    "content": "I emailed Professor Taylor about the deadline not reflecting the new midterm deadline and it has been fixed on Coursera now. Mine now shows a due date of March 1st at 11:59pm.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 2,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_27",
+    "source_type": "slack",
+    "timestamp": "2025-02-26T07:59:00Z",
+    "date_formatted": "Feb 26",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Midterm deadline",
+    "content": "Thanks for that @Jeremy",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_JEREMY"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_28",
+    "source_type": "slack",
+    "timestamp": "2025-02-26T08:00:00Z",
+    "date_formatted": "Feb 26",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Partner for midterm",
+    "content": "I forgot to pick a partner too.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_29",
+    "source_type": "slack",
+    "timestamp": "2025-02-26T09:48:00Z",
+    "date_formatted": "Feb 26",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Partner requirement",
+    "content": "I'm a little confused on the \"pick a partner\" thing as well—it says \"only required if you will work with a partner\" but it still shows as an overdue assignment and we've already established that I hate to feel like I did something wrong 😣\n\n(Mind you, I'm not opposed to having a partner but I thought that my being US Pacific Time would complicate collab)",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_30",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T08:26:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Module 7 Practice Sets",
+    "content": "Has anyone gotten the \"Module 7 Practice Sets\" to work? The grader is saying that tables channel and stay do not exist, but it finds owner fine. The SQL at this point is pretty basic, so I am thinking there is a grader issue like these tables weren't uploaded, but I wanted to check with you all, first.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_31",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T13:15:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Module 7 SQL Lab",
+    "content": "FWIW, I just got \"Module 07 SQL Lab PE-1\" to work\n\nOn to Module 07 SQL Lab PE-2!",
+    "thread_id": "thread_module7_sql_lab",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": [],
+      "thread_reply_count": 3,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_31_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T13:26:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 7 SQL Lab",
+    "content": "FYI - Module 07 SQL Lab PE-2 worked as well",
+    "thread_id": "thread_module7_sql_lab",
+    "parent_message_id": "slack_msg_31",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_31_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T13:55:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 7 SQL Lab",
+    "content": "Yeah, I learned the same lesson for a second time ... must submit entities in UPPERCASE, not the case presented in the IDE (using Workbench). I might just have this one learned. On to flubbing up something else ...\n\nThanks for the follow-up. :)",
+    "thread_id": "thread_module7_sql_lab",
+    "parent_message_id": "slack_msg_31",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_31_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T14:24:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 7 SQL Lab",
+    "content": "FWIW, I started on workbench but moved to DataGrip on the prof's recommendation & like it so far. I'm not suggesting that there's anything wrong with workbench, but in DataGrip there is this \"1 weird trick\" (🤓) that addresses the capitalization point—if you start typing in upper case, it will suggest auto-completes also in upper case.\n\nMight also work on workbench?",
+    "thread_id": "thread_module7_sql_lab",
+    "parent_message_id": "slack_msg_31",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_32",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T17:54:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Alec Mandell",
+      "slack_id": "U_ALEC_MANDELL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Coursera Locking Browser issue",
+    "content": "Anyone run into this issue?",
+    "thread_id": "thread_locking_browser",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": true,
+      "attachments": [
+        {
+          "filename": "Screenshot 2025-02-28 at 7.53.20 PM.png",
+          "url": "",
+          "size": 0
+        }
+      ],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 2,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_32_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T18:03:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Coursera Locking Browser issue",
+    "content": "I also got that. I don't remember the exact sequence, but something like Settings | Privacy & Security | Security\n\nYou should see a message like: \"Coursera Locking Browser was blocked because it is from an unidentified developer.\" Click \"Open Anyway\" & you're most of the way there.",
+    "thread_id": "thread_locking_browser",
+    "parent_message_id": "slack_msg_32",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_32_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T18:09:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Alec Mandell",
+      "slack_id": "U_ALEC_MANDELL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Coursera Locking Browser issue",
+    "content": "Yea I ended getting it to work. Not the most comfortable thing to be adding to my system though lol",
+    "thread_id": "thread_locking_browser",
+    "parent_message_id": "slack_msg_32",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_33",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T19:12:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "Alec Mandell",
+      "slack_id": "U_ALEC_MANDELL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Cardinality question",
+    "content": "what cardinality did you all get for 5?",
+    "thread_id": "thread_cardinality",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": true,
+      "attachments": [
+        {
+          "filename": "Screenshot 2025-02-28 at 9.12.02 PM.png",
+          "url": "",
+          "size": 0
+        }
+      ],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 1,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_33_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-02-28T19:55:00Z",
+    "date_formatted": "Feb 28",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Cardinality question",
+    "content": "[0, N]",
+    "thread_id": "thread_cardinality",
+    "parent_message_id": "slack_msg_33",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_34",
+    "source_type": "slack",
+    "timestamp": "2025-03-01T15:29:00Z",
+    "date_formatted": "Mar 1",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Windows 11 browser issue",
+    "content": "### Windows 11 with M365\n!!! Warning - my browser locking software kicked me out because a MS-Teams updater ran in the background !!!\n\nI was unable to find the updater in the task manager to kill it. I checked both processes and services. After a minute, I got kicked out of the exam. I almost had a panic attack but it let me log back in. I was able to finish the exam except i didn't get to double check my last answers.",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_35",
+    "source_type": "slack",
+    "timestamp": "2025-03-03T13:23:00Z",
+    "date_formatted": "Mar 3",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "TA contact info",
+    "content": "Does anyone have the 6620 TA contact info handy?\n\n(I've got a question on Module 7 Application (Part 4))",
+    "thread_id": "thread_ta_contact",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 4,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_35_reply_1",
+    "source_type": "slack",
+    "timestamp": "2025-03-03T13:32:00Z",
+    "date_formatted": "Mar 3",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: TA contact info",
+    "content": "Here is what I have for Koushik:\nknallap@g.clemson.edu",
+    "thread_id": "thread_ta_contact",
+    "parent_message_id": "slack_msg_35",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_35_reply_2",
+    "source_type": "slack",
+    "timestamp": "2025-03-03T14:27:00Z",
+    "date_formatted": "Mar 3",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: TA contact info",
+    "content": "Anything the rest of us schmoes can help with?",
+    "thread_id": "thread_ta_contact",
+    "parent_message_id": "slack_msg_35",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_35_reply_3",
+    "source_type": "slack",
+    "timestamp": "2025-03-03T17:18:00Z",
+    "date_formatted": "Mar 3",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: TA contact info",
+    "content": "Turns out to be a problem with the download files for 'Module 07 SQL Lab - PracticeSet01' (the graded practice Lab Practice Sets).\n\nStay tuned for updates from the 6620 team.",
+    "thread_id": "thread_ta_contact",
+    "parent_message_id": "slack_msg_35",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_35_reply_4",
+    "source_type": "slack",
+    "timestamp": "2025-03-03T18:38:00Z",
+    "date_formatted": "Mar 3",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: TA contact info",
+    "content": "Looks like this is fixed now",
+    "thread_id": "thread_ta_contact",
+    "parent_message_id": "slack_msg_35",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:09:00Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "SQL Lab Advice",
+    "content": "So I've been working my way Module 07 SQL Lab Practice Sets and thought I'd share some cheap advice: Y'all want to be very careful to reproduce the expected output documented in each of the problem files.",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09_reply1",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:09:30Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "How careful? Well, I just got zeroed on one of the problems because one of my column headings was \"CEIL(ABS(STAY.StayPrice))\" when the autograder expected \"CEIL(ABS(StayPrice))\". That's right, lost the problem because my column header included the table specifier.",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09_reply2",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:10:00Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "(and yes, I checked with the TA and that's just how this is gonna work)",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09_reply3",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:10:30Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "You've been warned! 😉",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_4_11_50",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T11:50:00Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "A warning I read, took to heart, and then promptly ignored and thus got a problem wrong since I used the column name \"Actual Price\" and not \"Actual Price Rounded\" - very annoying",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_28_12_09",
+    "source_type": "slack",
+    "timestamp": "2025-03-28T00:09:00Z",
+    "date_formatted": "Mar 28",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Project Autograder Question",
+    "content": "Does anyone know if the pizza db project implementation autograded, and if so, how many attempts we get at it? I have some questions about it, but don't know if I can just submit and see if my guesses are correct and fix as needed, or if I have to figure out how I can make office hours",
+    "thread_id": "thread_pizza_project",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "has_attachments": false,
+    "attachments": [],
+    "reactions": [],
+    "mentions": []
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:09:00Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Module 7 Problem Reference",
+    "content": "Here's a fun one. Module 7 Problem Set 7 Problem 3 for some reason rounds a dollar amount to a single digit after the decimal point. Fine, I add a ROUND to round to a single digit. It turns out, though, in the expected answer, that the dollar amounts that had a 5 in the pennies spot (i.e. x.x5) were rounded down, not up. And it's not just concat to a single decimal point, since e.g. x.x8 is properly rounded up",
+    "thread_id": "thread_problemset07_problem",
+    "parent_message_id": "slack_msg_marc_leavitt_apr_5_11_51",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_reference",
+    "source_type": "slack",
+    "timestamp": "2025-04-05T13:08:00Z",
+    "date_formatted": "Apr 5",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "ProblemSet07 Problem",
+    "content": "Anyone else having a problem with ProblemSet07-Problem03? If I use ROUND in the 'TOTALINVOICES' column, 6 rows have values that are 0.1 higher than the expected results. If instead I use TRUNCATE, then I get 4 rows that have 'TOTALINVOICES' values that are 0.1 lower than expected results.\n\nIdeas?",
+    "thread_id": "thread_problemset07_problem",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 4,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_gary_webb_apr_5_12_36",
+    "source_type": "slack",
+    "timestamp": "2025-04-05T12:36:00Z",
+    "date_formatted": "Apr 5",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Autograder Question",
+    "content": "Nothing like just trying it, so I did. Turns out that you get 5 submission per day until the due date. It shows what tables you have dorked -up, but not much about the error, unlike the homework. Added Note: I looked all over for what we should name the zip file because that seemed to matter for the homework and it does not seem to matter for the project, so name what you like.",
+    "thread_id": "thread_pizza_project",
+    "parent_message_id": "slack_msg_andrew_krause_mar_28_12_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_apr_5_11_51",
+    "source_type": "slack",
+    "timestamp": "2025-04-05T11:51:00Z",
+    "date_formatted": "Apr 5",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Autograder Question",
+    "content": "I'm emailing the question.",
+    "thread_id": "thread_pizza_project",
+    "parent_message_id": "slack_msg_andrew_krause_mar_28_12_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_john_kappler_mar_28_3_16",
+    "source_type": "slack",
+    "timestamp": "2025-03-28T15:16:00Z",
+    "date_formatted": "Mar 28",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Autograder Question",
+    "content": "Well, here's the answer to the autograder question: \"The autograder will execute your SQL in order: CreateTables, then CreateViews, then CreateSPs, then PopulateData, and finally DropTables. Be aware that the autograder will be running on an Ubuntu virtual machine, meaning that the database names ARE case sensitive! Which also means the case of the file names MUST be exactly as shown above.\"",
+    "thread_id": "thread_pizza_project",
+    "parent_message_id": "slack_msg_andrew_krause_mar_28_12_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_28_3_04_3",
+    "source_type": "slack",
+    "timestamp": "2025-03-28T15:06:00Z",
+    "date_formatted": "Mar 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Autograder Question",
+    "content": "Good question!",
+    "thread_id": "thread_pizza_project",
+    "parent_message_id": "slack_msg_andrew_krause_mar_28_12_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_28_3_04",
+    "source_type": "slack",
+    "timestamp": "2025-03-28T15:04:00Z",
+    "date_formatted": "Mar 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Project Autograder Question",
+    "content": "Does anyone know if the pizza db project implementation autograded, and if so, how many attempts we get at it? I have some questions about it, but don't know if I can just submit and see if my guesses are correct and fix as needed, or if I have to figure out how I can make office hours",
+    "thread_id": "thread_pizza_project",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 6,
+      "last_reply_time": "13 days ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_28_12_20",
+    "source_type": "slack",
+    "timestamp": "2025-03-28T12:20:00Z",
+    "date_formatted": "Mar 28",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: PracticeSet05 Problem",
+    "content": "He's an active owner because he exists in the owner table with no ownerenddate",
+    "thread_id": "thread_practiceset05_problem",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_24_4_59",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_28_12_09",
+    "source_type": "slack",
+    "timestamp": "2025-03-28T00:09:00Z",
+    "date_formatted": "Mar 28",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "PracticeSet05 Problem",
+    "content": "Sad to say that I'm having a little trouble with PracticeSet05-Problem03. I was trying to determine active based on STAY -> HOUSE -> Owner, but I only come up with 4 rows instead of the 5 in comments/description.\n\nAlso, the instructions are asking for a new 'OwnerStatus' field, but the sample output doesn't have that(?)",
+    "thread_id": "thread_practiceset05_problem",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 5,
+      "last_reply_time": "17 days ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_jeremy_mar_24_5_10_2",
+    "source_type": "slack",
+    "timestamp": "2025-03-24T17:11:00Z",
+    "date_formatted": "Mar 24",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: PracticeSet06 Problem",
+    "content": "Your set 5 creates the EXTRA table",
+    "thread_id": "thread_practiceset06_problem",
+    "parent_message_id": "slack_msg_gary_webb_mar_21_8_44",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "pray",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_24_4_59",
+    "source_type": "slack",
+    "timestamp": "2025-03-24T16:59:00Z",
+    "date_formatted": "Mar 24",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: PracticeSet06 Problem",
+    "content": "I am also stuck on problemset06-Problem04. Only question I am not getting correct. However the grader is saying ERROR: Table 'InstantStay3.house_extra' doesn't exist. However the output shows the same.",
+    "thread_id": "thread_practiceset06_problem",
+    "parent_message_id": "slack_msg_gary_webb_mar_21_8_44",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_gary_webb_mar_22_9_39",
+    "source_type": "slack",
+    "timestamp": "2025-03-22T09:39:00Z",
+    "date_formatted": "Mar 22",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "PracticeSet06 Problem",
+    "content": "Has anybody been able to get the grader to accept Mod8 PracticeSet06-Problem04?\nIt works fine locally but my submission fails because foreign key contraint on EXTRA(ExtraID)",
+    "thread_id": "thread_practiceset06_problem",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 7,
+      "last_reply_time": "19 days ago",
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_gokul_mar_22_5_30",
+    "source_type": "slack",
+    "timestamp": "2025-03-22T05:30:00Z",
+    "date_formatted": "Mar 22",
+    "sender": {
+      "name": "Gokul",
+      "slack_id": "U_GOKUL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 2 Question",
+    "content": "Ah, of course\n\nThanks!",
+    "thread_id": "thread_project_part2",
+    "parent_message_id": "slack_msg_andrew_krause_mar_20_3_17",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_gary_webb_mar_21_8_44",
+    "source_type": "slack",
+    "timestamp": "2025-03-21T20:44:00Z",
+    "date_formatted": "Mar 21",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 2 Question",
+    "content": "You have to look at the downloadable PDF in the second part of Module 19. The data is via pictures in the pdf. ANd then there are transactions you have to enter at the end. (I looked for this for about 15 minutes and thought I was going nuts.)\n\nPages 6 and 7 of the 8-page pdf in Module 19: Project Part 2: Database Implementation.",
+    "thread_id": "thread_project_part2",
+    "parent_message_id": "slack_msg_andrew_krause_mar_20_3_17",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_20_9_41",
+    "source_type": "slack",
+    "timestamp": "2025-03-20T21:41:00Z",
+    "date_formatted": "Mar 20",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 2 Question",
+    "content": "Thats what I was working with, but all I see is \"4. Create an SQL script that has the statements necessary to populate your database with the starter data provided below. Name this file \"PopulateData.sql\"\" but not a link or list of data",
+    "thread_id": "thread_project_part2",
+    "parent_message_id": "slack_msg_andrew_krause_mar_20_3_17",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_john_kappler_mar_20_6_37",
+    "source_type": "slack",
+    "timestamp": "2025-03-20T18:37:00Z",
+    "date_formatted": "Mar 20",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 2 Question",
+    "content": "Module 19",
+    "thread_id": "thread_project_part2",
+    "parent_message_id": "slack_msg_andrew_krause_mar_20_3_17",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_20_3_53",
+    "source_type": "slack",
+    "timestamp": "2025-03-20T15:53:00Z",
+    "date_formatted": "Mar 20",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Project Part 2 Question",
+    "content": "Maybe I'm just blind, but where's the starter data for part 2 of the project?",
+    "thread_id": "thread_project_part2",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 6,
+      "last_reply_time": "21 days ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_amy_graff_mar_20_3_18",
+    "source_type": "slack",
+    "timestamp": "2025-03-20T15:18:00Z",
+    "date_formatted": "Mar 20",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 8 Application Due Date",
+    "content": "Thanks @John Kappler & @Gary Webb! Agreed. I just wanted to make sure I'm seeing what everyone else is seeing (maybe gettin' a little paranoid after not getting those emails 😉)",
+    "thread_id": "thread_module8_application",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_19_3_49",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [
+        "U_JOHN_KAPPLER",
+        "U_GARY_WEBB"
+      ]
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_20_3_17",
+    "source_type": "slack",
+    "timestamp": "2025-03-20T15:17:00Z",
+    "date_formatted": "Mar 20",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 8 Application Due Date",
+    "content": "Agree, those application parts were really fast/easy. All 5 combined were easier than 1 practice set.",
+    "thread_id": "thread_module8_application",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_19_3_49",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_19_6_33",
+    "source_type": "slack",
+    "timestamp": "2025-03-19T18:33:00Z",
+    "date_formatted": "Mar 19",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Module 8 Application Due Date",
+    "content": "That's what I am seeing in Coursera, but I also noticed that the final pack of Exercises moved out at least a week and those are time-crushers. The Application modules for Mod 8 aren't bad on time.",
+    "thread_id": "thread_module8_application",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_19_3_49",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_gary_webb_mar_19_6_16",
+    "source_type": "slack",
+    "timestamp": "2025-03-19T18:16:00Z",
+    "date_formatted": "Mar 19",
+    "sender": {
+      "name": "Gary Webb",
+      "slack_id": "U_GARY_WEBB"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Module 8 Application Due Date",
+    "content": "So, email aside, everyone else is still seeing Module 8 Application parts 1 - 5 due next Tues, right?",
+    "thread_id": "thread_module8_application",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_john_kappler_mar_19_3_54",
+    "source_type": "slack",
+    "timestamp": "2025-03-19T15:54:00Z",
+    "date_formatted": "Mar 19",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Email to Professor",
+    "content": "Hopefully you received an email from the Prof via Coursera earlier this afternoon? I received a note saying the deadlines were updated to smooth out the work a bit. Professor Taylor is very responsive and helpful in my experience.",
+    "thread_id": "thread_email_to_professor",
+    "parent_message_id": "slack_msg_jeremy_mar_18_5_28_2",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "also_sent_to_channel": true
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_19_3_49",
+    "source_type": "slack",
+    "timestamp": "2025-03-19T15:49:00Z",
+    "date_formatted": "Mar 19",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Email to Professor",
+    "content": "We await with baited breath!",
+    "thread_id": "thread_email_to_professor",
+    "parent_message_id": "slack_msg_jeremy_mar_18_5_28_2",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_jeremy_mar_18_4_55",
+    "source_type": "slack",
+    "timestamp": "2025-03-18T16:55:00Z",
+    "date_formatted": "Mar 18",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Email to Professor",
+    "content": "I'll drop them an email ... this feels way wrong",
+    "thread_id": "thread_email_to_professor",
+    "parent_message_id": "slack_msg_jeremy_mar_18_5_28",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 5,
+      "last_reply_time": "22 days ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_18_10_26_2",
+    "source_type": "slack",
+    "timestamp": "2025-03-18T10:26:00Z",
+    "date_formatted": "Mar 18",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Course Workload",
+    "content": "So we have what.. 17 things due this week in DB class",
+    "thread_id": null,
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_jeremy_mar_18_5_28_2",
+    "source_type": "slack",
+    "timestamp": "2025-03-18T05:28:30Z",
+    "date_formatted": "Mar 18",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 1 Question",
+    "content": "now I'm curious, what were the old instructions?",
+    "thread_id": "thread_project_part1",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_15_3_18",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_jeremy_mar_18_5_28",
+    "source_type": "slack",
+    "timestamp": "2025-03-18T05:28:00Z",
+    "date_formatted": "Mar 18",
+    "sender": {
+      "name": "Jeremy",
+      "slack_id": "U_JEREMY"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 1 Question",
+    "content": "Turns out that I was working from an old version of the instructions. 2nd time in a week--you'd think I'd learn!",
+    "thread_id": "thread_project_part1",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_15_3_18",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_15_4_33",
+    "source_type": "slack",
+    "timestamp": "2025-03-15T16:33:00Z",
+    "date_formatted": "Mar 15",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Project Part 1 Question",
+    "content": "You have to click the boxes on the left and then which page(s) it's on",
+    "thread_id": "thread_project_part1",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_15_3_18",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "also_sent_to_channel": true
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_15_3_30",
+    "source_type": "slack",
+    "timestamp": "2025-03-15T15:30:00Z",
+    "date_formatted": "Mar 15",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Project Part 1 Question",
+    "content": "Has anyone successfully submitted Project Part 1: Database Design? I seem to lack the cleverness to follow the instructions 😉",
+    "thread_id": "thread_project_part1",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 4,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_amy_graff_mar_15_3_22",
+    "source_type": "slack",
+    "timestamp": "2025-03-15T15:22:00Z",
+    "date_formatted": "Mar 15",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Due Date Discrepancy",
+    "content": "Has anyone noticed the discrepancy of due dates between coursera and gradescope?",
+    "thread_id": "thread_due_date_discrepancy",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": [],
+      "thread_reply_count": 1,
+      "last_reply_time": "23 days ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_15_3_18",
+    "source_type": "slack",
+    "timestamp": "2025-03-15T15:18:00Z",
+    "date_formatted": "Mar 15",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: ProblemSet02 Issue",
+    "content": "Same",
+    "thread_id": "thread_problemset02",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_10_1_56",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_alec_mandell_mar_14_12_30",
+    "source_type": "slack",
+    "timestamp": "2025-03-14T00:30:00Z",
+    "date_formatted": "Mar 14",
+    "sender": {
+      "name": "Alec Mandell",
+      "slack_id": "U_ALEC_MANDELL"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: ProblemSet02 Issue",
+    "content": "Yep, sorry, had it backwards and did use option #3.",
+    "thread_id": "thread_problemset02",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_10_1_56",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_10_2_22",
+    "source_type": "slack",
+    "timestamp": "2025-03-10T14:22:00Z",
+    "date_formatted": "Mar 10",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "ProblemSet02 Issue",
+    "content": "Here's some more fun—turns out that if you downloaded \"Module 07 SQL Lab - ProblemSet02\" too early (like I apparently did), the expected output for Problem 13 is wrong.",
+    "thread_id": "thread_problemset02",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 4,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_john_kappler_mar_10_2_16",
+    "source_type": "slack",
+    "timestamp": "2025-03-10T14:16:00Z",
+    "date_formatted": "Mar 10",
+    "sender": {
+      "name": "John Kappler",
+      "slack_id": "U_JOHN_KAPPLER"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: ROUND Function Issue",
+    "content": "I don't think that's the way it's expected to work though",
+    "thread_id": "thread_round_function",
+    "parent_message_id": "slack_msg_andrew_krause_mar_7_4_49",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "edited": true
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_10_1_56",
+    "source_type": "slack",
+    "timestamp": "2025-03-10T13:56:00Z",
+    "date_formatted": "Mar 10",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: ROUND Function Issue",
+    "content": "Well, with the use of IF(), MOD(), and hardcoding a check for a specific employee, I got it to work",
+    "thread_id": "thread_round_function",
+    "parent_message_id": "slack_msg_andrew_krause_mar_7_4_49",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_7_10_16_edit",
+    "source_type": "slack",
+    "timestamp": "2025-03-07T22:20:00Z",
+    "date_formatted": "Mar 7",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: ROUND Function Issue",
+    "content": "I sent an email. SQLServer has a way to change the behavior of ROUND, but it doesn't look like MySQL does",
+    "thread_id": "thread_round_function",
+    "parent_message_id": "slack_msg_andrew_krause_mar_7_4_49",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_7_10_16",
+    "source_type": "slack",
+    "timestamp": "2025-03-07T22:16:00Z",
+    "date_formatted": "Mar 7",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "ROUND Function Issue",
+    "content": "Here's a fun one. Module 7 Problem Set 7 Problem 3 for some reason rounds a dollar amount to a single digit after the decimal point. Fine, I add a ROUND to round to a single digit. It turns out, though, in the expected answer, that the dollar amounts that had a 5 in the pennies spot (i.e. x.x5) were rounded down, not up. And it's not just concat to a single decimal point, since e.g. x.x8 is properly rounded up",
+    "thread_id": "thread_round_function",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 3,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_7_5_16",
+    "source_type": "slack",
+    "timestamp": "2025-03-07T17:16:00Z",
+    "date_formatted": "Mar 7",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Points",
+    "content": "Just glad we get 10 attempts to earn points.",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_7_4_49",
+    "source_type": "slack",
+    "timestamp": "2025-03-07T16:49:00Z",
+    "date_formatted": "Mar 7",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Decimal Places",
+    "content": "Yes. That. But I think I noticed that in the problems where expected results contained both 1- and 2-decimal place numbers (e.g., \"160.0\" and \"175.17\", 'ROUND()' generated \"160\" and \"175.17\" and the autograder expected that. But, if you used 'FORMAT(XX, 2)' to generate \"160.00\", the autograder did *not* like that",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_amy_graff_mar_6_6_23_pm",
+    "source_type": "slack",
+    "timestamp": "2025-03-06T18:23:00Z",
+    "date_formatted": "Mar 6",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Coursera Grades",
+    "content": "When do the grades from all these SQL labs make their way back over to Coursera?",
+    "thread_id": "thread_coursera_grades",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "thread_reply_count": 1,
+      "last_reply_time": "1 month ago"
+    }
+  },
+  {
+    "message_id": "slack_msg_amy_graff_mar_6_6_23",
+    "source_type": "slack",
+    "timestamp": "2025-03-06T18:23:00Z",
+    "date_formatted": "Mar 6",
+    "sender": {
+      "name": "Amy Graff",
+      "slack_id": "U_AMY_GRAFF"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: Coursera Grades",
+    "content": "I'm guessing they will be manually entered.",
+    "thread_id": "thread_coursera_grades",
+    "parent_message_id": "slack_msg_andrew_krause_mar_6_6_19",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_6_6_20",
+    "source_type": "slack",
+    "timestamp": "2025-03-06T18:20:00Z",
+    "date_formatted": "Mar 6",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "SQL Lab Advice",
+    "content": "So I've been working my way Module 07 SQL Lab Practice Sets and thought I'd share some cheap advice: Y'all want to be very careful to reproduce the expected output documented in each of the problem files.",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": null,
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09_reply1",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:09:30Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "How careful? Well, I just got zeroed on one of the problems because one of my column headings was \"CEIL(ABS(STAY.StayPrice))\" when the autograder expected \"CEIL(ABS(StayPrice))\". That's right, lost the problem because my column header included the table specifier.",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09_reply2",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:10:00Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "(and yes, I checked with the TA and that's just how this is gonna work)",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_marc_leavitt_mar_4_9_09_reply3",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T21:10:30Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Marc Leavitt",
+      "slack_id": "U_MARC_LEAVITT"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "You've been warned! 😉",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_4_11_50",
+    "source_type": "slack",
+    "timestamp": "2025-03-04T11:50:00Z",
+    "date_formatted": "Mar 4",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Re: SQL Lab Advice",
+    "content": "A warning I read, took to heart, and then promptly ignored and thus got a problem wrong since I used the column name \"Actual Price\" and not \"Actual Price Rounded\" - very annoying",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [
+        {
+          "name": "thumbsup",
+          "count": 1,
+          "users": []
+        }
+      ],
+      "mentions": []
+    }
+  },
+  {
+    "message_id": "slack_msg_andrew_krause_mar_6_4_09",
+    "source_type": "slack",
+    "timestamp": "2025-03-06T16:09:00Z",
+    "date_formatted": "Mar 6",
+    "sender": {
+      "name": "Andrew Krause",
+      "slack_id": "U_ANDREW_KRAUSE"
+    },
+    "recipients": [
+      {
+        "name": "cpsc6620-spring-2025",
+        "type": "channel",
+        "channel_id": "C_CPSC6620_SPRING_2025"
+      }
+    ],
+    "subject": "Decimal Points",
+    "content": "Also be sure to pay attention to number of digits after decimal points, even if they're not mentioned in the question. E.g. 90.60 != 90.6",
+    "thread_id": "thread_sql_lab_advice",
+    "parent_message_id": "slack_msg_marc_leavitt_mar_4_9_09",
+    "course_context": "CPSC6620",
+    "metadata": {
+      "has_attachments": false,
+      "attachments": [],
+      "reactions": [],
+      "mentions": [],
+      "edited": true
+    }
+  }
+]

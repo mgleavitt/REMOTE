@@ -1,0 +1,7 @@
+{
+    "mypy.dmypyExecutable": "/Users/marcleavitt/anaconda3/envs/REMOTE/bin/dmypy",
+    "editor.defaultFormatter": "ms-python.autopep8",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    }
+}

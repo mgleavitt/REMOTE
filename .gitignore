@@ -1,5 +1,7 @@
 *.log
-*.json
 __pycache__
-data/
 vector_similarity_test/
+data/email/raw/
+data/slack/raw/
+results/
+

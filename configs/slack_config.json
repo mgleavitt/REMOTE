@@ -1,0 +1,40 @@
+{
+  "message_type": "slack",
+  "field_weights": {
+    "subject": 1.0,
+    "content": 2.5,
+    "course_context": 2.0,
+    "channel_name": 1.5
+  },
+  "entity_extraction": {
+    "course_code_pattern": "\\b[A-Z]{2,4}\\s?\\d{3,4}[A-Z]?\\b",
+    "module_pattern": "\\bmodules?\\s*(\\d+)\\b|\\bmodules?\\s*([0-9]+[A-Za-z]?)\\b|\\bmod\\s*(\\d+)\\b",
+    "assignment_pattern": "\\b(?:problem ?sets?|assignments?|labs?|exercises?|homeworks?|ps)\\s*(?:#|No\\.?|Number|)?\\s*(\\d+[A-Za-z]?)\\b",
+    "date_pattern": "\\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?\\b|\\btoday\\b|\\btomorrow\\b|\\byesterday\\b"
+  },
+  "preprocessing": {
+    "exclude_message_types": ["channel_join", "channel_leave", "bot_message"],
+    "exclude_substrings": ["has joined the channel", "has left the channel"],
+    "ngram_range": [1, 3],
+    "tfidf_min_df": 1
+  },
+  "correlation": {
+    "threshold_strong": 0.45,
+    "threshold_moderate": 0.35,
+    "threshold_weak": 0.25,
+    "course_match_boost": 0.2,
+    "module_match_boost": 0.15,
+    "assignment_match_boost": 0.15,
+    "date_proximity_boost_max": 0.15,
+    "date_proximity_days": 5,
+    "exact_match_weight": 5.0
+  },
+  "output": {
+    "max_correlations_per_activity": 5,
+    "compute_immediately": true,
+    "background_processing": true
+  },
+  "activity_sample_size": 30,
+  "exclude_activity_types": [],
+  "exclude_substrings": []
+}
