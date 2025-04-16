@@ -33,8 +33,6 @@ from PySide6.QtGui import (
 # Import data agent
 from agents.data_agent_coursera_sim import DataAgentCourseraSim
 
-from test_pipeline import TestCoreComponent
-
 # Import models
 from models import ActivityModel, DateGroupProxyModel, ActivityFilterProxyModel, DateOnlyProxyModel
 
