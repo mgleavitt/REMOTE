@@ -10,7 +10,7 @@ def main():
     agent = EmailDataAgent()
     
     # Path to the email data file
-    data_file = "/Users/marcleavitt/dev/REMOTE/data/email/imported/emails.json"
+    data_file = "/Users/marcleavitt/dev/REMOTE/data/email/imported/email-messages.json"
     
     # Load the data
     success = agent.load_data(data_file)

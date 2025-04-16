@@ -1,7 +1,7 @@
 """
 Core LLM component for processing user queries with conversation history support.
 """
-# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name, unnecessary-pass
+# pylint: disable=no-name-in-module, import-error, trailing-whitespace, invalid-name, unnecessary-pass, line-too-long
 
 import logging
 import traceback

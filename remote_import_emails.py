@@ -50,7 +50,7 @@ def parse_arguments():
     parser.add_argument(
         '--output_file', 
         default='emails.json',
-        help='Path for the output JSON file (default: emails.json)'
+        help='Path for the output JSON file (default: email-messages.json)'
     )
     parser.add_argument(
         '--verbose', 
