@@ -195,7 +195,7 @@ class MainWindow(QMainWindow):
         # Initialize and load data from the data agent
         self.data_agent = DataAgentCourseraSim()
         data_dir = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "data", "Coursera")
+            os.path.abspath(__file__)), "data", "coursera")
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
         data_file = os.path.join(data_dir, "screenscrape.csv")
