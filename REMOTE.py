@@ -222,43 +222,43 @@ class MainWindow(QMainWindow):
         """Load both email and Slack message data."""
         # Load email data
         self.load_message_type_data("email", self.email_data_agent)
-        
+
         # Load Slack data
         self.load_message_type_data("slack", self.slack_data_agent)
-        
+
         # Process correlations if any data was loaded
         self.process_message_correlations()
 
     def load_message_type_data(self, message_type, agent):
         """Load data for a specific message type.
-        
+
         Args:
             message_type: Type of message data ("email" or "slack")
             agent: The MessageSimilarityAgent instance to use
         """
         # Construct data file path
-        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "data", message_type, "imported")
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
-        
+
         # Default filename based on message type
         filename = "email-messages.json" if message_type == "email" else "slack-messages.json"
         data_file = os.path.join(data_dir, filename)
-        
+
         if not os.path.exists(data_file):
             logger.warning("%s data file not found: %s", message_type, data_file)
             if self.statusBar:
                 self.statusBar.showMessage(f"{message_type.capitalize()} data file not found", 3000)
             return False
-        
+
         # Load data with status updates
         if self.statusBar:
             self.statusBar.showMessage(f"Loading {message_type} data...", 1000)
             QApplication.processEvents()
-        
+
         success = agent.load_data(data_file)
-        
+
         if success:
             logger.info("%s data loaded successfully from %s", message_type, data_file)
             if self.statusBar:
@@ -267,22 +267,22 @@ class MainWindow(QMainWindow):
             logger.error("Failed to load %s data from %s", message_type, data_file)
             if self.statusBar:
                 self.statusBar.showMessage(f"Failed to load {message_type} data", 3000)
-        
+
         return success
 
     def process_message_correlations(self):
         """Process correlations between activities and messages."""
         if not hasattr(self, 'activity_model') or not self.activity_model:
             return
-        
+
         activities = self.activity_model.get_activities()
         if not activities:
             return
-        
+
         # Show status
         if self.statusBar:
             self.statusBar.showMessage("Processing message correlations...", 2000)
-        
+
         # Start background processing for both message types
         self.start_background_correlations(activities)
 
@@ -291,11 +291,11 @@ class MainWindow(QMainWindow):
         # Process email correlations
         if hasattr(self, 'email_data_agent') and self.email_data_agent:
             self.email_data_agent.start_background_correlation(activities)
-        
+
         # Process Slack correlations
         if hasattr(self, 'slack_data_agent') and self.slack_data_agent:
             self.slack_data_agent.start_background_correlation(activities)
-        
+
         # Start the timer to check correlation status
         self.correlation_timer.start(1000)  # Check every second
 
@@ -303,15 +303,15 @@ class MainWindow(QMainWindow):
         """Check the status of background correlation processing."""
         email_completed = not hasattr(self, 'email_data_agent') or not self.email_data_agent.is_correlating
         slack_completed = not hasattr(self, 'slack_data_agent') or not self.slack_data_agent.is_correlating
-        
+
         if email_completed and slack_completed:
             # Stop checking status
             self.correlation_timer.stop()
-            
+
             # Update UI with correlation results
             self.activity_model.set_activities(self.activity_model.get_activities())
             self.populate_activity_dates()
-            
+
             # Show completion message
             if self.statusBar:
                 self.statusBar.showMessage("Message correlation completed", 3000)
